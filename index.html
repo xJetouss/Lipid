@@ -58,7 +58,7 @@
 
       .cards {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 20px;
         align-items: stretch;
       }
@@ -159,6 +159,12 @@
         }
       }
 
+      @media (max-width: 1000px) {
+        .cards {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
       @media (max-width: 520px) {
         body {
           padding: 24px 16px;
@@ -243,6 +249,19 @@
 
           <div class="card-content">
             <h2 class="card-title">Dialyse NU</h2>
+            <span class="card-button">Öffnen</span>
+          </div>
+        </a>
+        <a
+          class="card"
+          href="https://bastighg38-del.github.io/Dialyse-NU/apherese.html"
+        >
+          <div class="logo-container">
+            <img class="logo" src="Apherese-NU.png" alt="Apherese NU Logo" />
+          </div>
+
+          <div class="card-content">
+            <h2 class="card-title">Apherese NU</h2>
             <span class="card-button">Öffnen</span>
           </div>
         </a>
