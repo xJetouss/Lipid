@@ -674,42 +674,42 @@
           const ernaehrungNum = parseDeNum(patientVal("ernaehrung"));
 
           const payload = {
-            Datum: formatDate(patientVal("datum")),
-            Gesamt_Cholesterin: num("9Input"),
-            HDL_C: num("7Input"),
-            eLDL_C: num("11Input"),
-            gLDL_C: num("1Input"),
-            non_HDL_C: num("15Input"),
-            Triglyzeride: num("3Input"),
-            ApoB: num("13Input"),
-            Lp_a: num("18Input"),
-            HbA1c: num("19Input"),
-            Kreatinin: num("5Input"),
-            eRemnant_C: num("21Input"),
-            eLDL_CS: num("23Input"),
-            Lp_a_CRM: num("25Input"),
-            CorrLDL_CRM: num("27Input"),
-            Lp_a_CAHA: num("29Input"),
-            deltaLDL_C: num("33Input"),
-            Non_HDL_C_ApoB: num("35Input"),
-            TG_ApoB: num("36Input"),
-            Gesamtcholesterin_ApoB: num("37Input"),
-            LDL_C_ApoB: num("38Input"),
+            datum: formatDate(patientVal("datum")),
+            gesamt_cholesterin: num("9Input"),
+            hdl_c: num("7Input"),
+            eldl_c: num("11Input"),
+            gldl_c: num("1Input"),
+            non_hdl_c: num("15Input"),
+            triglyzeride: num("3Input"),
+            apob: num("13Input"),
+            lp_a: num("18Input"),
+            hba1c: num("19Input"),
+            kreatinin: num("5Input"),
+            eremnant_c: num("21Input"),
+            eldl_cs: num("23Input"),
+            lp_a_crm: num("25Input"),
+            corrldl_crm: num("27Input"),
+            lp_a_caha: num("29Input"),
+            delta_ldl_c: num("33Input"),
+            non_hdl_c_apob: num("35Input"),
+            tg_apob: num("36Input"),
+            gesamtcholesterin_apob: num("37Input"),
+            ldl_c_apob: num("38Input"),
 
-            PatientenID: parseDeNum(patientVal("patientenId")),
-            Geburtsdatum: formatDate(patientVal("geburtsdatum"), true),
-            Größe: parseGroesse(patientVal("groesse")),
-            Gewicht: parseDeNum(patientVal("gewicht")),
-            Blutdruck: parseBlutdruck(patientVal("blutdruck")),
-            Geschlecht: patientVal("geschlecht"),
-            Zigarettenprotag: parseDeNum(patientVal("zigaretten")),
-            Familie: familieBool,
-            Schritte: parseDeNum(patientVal("schritte")),
-            Ernährung: ernaehrungNum,
-            Schlaf: parseDeNum(patientVal("schlaf")),
+            patienten_id: parseDeNum(patientVal("patientenId")),
+            geburtsdatum: formatDate(patientVal("geburtsdatum"), true),
+            groesse: parseGroesse(patientVal("groesse")),
+            gewicht: parseDeNum(patientVal("gewicht")),
+            blutdruck: parseBlutdruck(patientVal("blutdruck")),
+            geschlecht: patientVal("geschlecht"),
+            zigarettenprotag: parseDeNum(patientVal("zigaretten")),
+            familie: familieBool,
+            schritte: parseDeNum(patientVal("schritte")),
+            ernaehrung: ernaehrungNum,
+            schlaf: parseDeNum(patientVal("schlaf")),
           };
 
-          if (!payload.PatientenID) {
+          if (!payload.patienten_id) {
             showPopup(
               "Patienten-ID fehlt",
               "Bitte eine Patienten-ID eingeben.",
@@ -732,9 +732,18 @@
               return;
             }
 
-            const result = await res.json();
+            const raw = await res.text();
+            let result = {};
+            try {
+              result = raw ? JSON.parse(raw) : {};
+            } catch {
+              result = { detail: raw };
+            }
             if (!res.ok) {
-              throw new Error(result.detail || "Fehler beim Speichern");
+              throw new Error(
+                (typeof result.detail === "string" && result.detail) ||
+                  `Fehler beim Speichern (HTTP ${res.status})`,
+              );
             }
 
             showPopup(
