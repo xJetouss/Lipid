@@ -39,8 +39,8 @@ async function confirmPopup(title, text, confirmText = "Ja, löschen") {
 }
 
 // ================== API ==================
-const API_URL = "https://lipidapi.de.deplexo.com";
-
+//const API_URL = "https://lipidapi.de.deplexo.com";
+const API_URL = "https://jetouss-api.onrender.com"
 // ================== Base Path ==================
 function getBasePath() {
   return window.location.pathname.includes("/Risiko/") ? "../" : "";
