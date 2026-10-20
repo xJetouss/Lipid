@@ -73,8 +73,10 @@
       }
 
       .patient-grid {
+        --feld-h: 44px;
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: 1fr;
         column-gap: 56px;
         row-gap: 22px;
         width: 100%;
@@ -82,6 +84,9 @@
 
       .patient-grid .eingabefeld {
         width: auto;
+        height: 100%;
+        box-sizing: border-box;
+        justify-content: space-between;
         padding: 12px 16px;
         background: rgba(255, 255, 255, 0.75);
         border: 1px solid rgba(0, 0, 0, 0.07);
@@ -110,11 +115,17 @@
         margin-bottom: 2px;
         text-align: left;
         color: #4a5a6a;
+        line-height: 1.3;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .patient-grid .eingabefeld input,
       .patient-grid .eingabefeld select {
         width: 100%;
+        height: var(--feld-h);
+        min-height: var(--feld-h);
         border: none;
         border-bottom: 1px solid #ccc;
         background: transparent;
@@ -159,7 +170,8 @@
         appearance: textfield;
       }
 
-      .patient-grid .eingabefeld input[type="date"] {
+      .patient-grid .eingabefeld input[type="date"],
+      .patient-grid .eingabefeld input[type="month"] {
         font-size: 1rem;
         cursor: pointer;
         color: #1a1a1a;
@@ -167,7 +179,10 @@
 
       .patient-grid
         .eingabefeld
-        input[type="date"]::-webkit-calendar-picker-indicator {
+        input[type="date"]::-webkit-calendar-picker-indicator,
+      .patient-grid
+        .eingabefeld
+        input[type="month"]::-webkit-calendar-picker-indicator {
         cursor: pointer;
         opacity: 0.55;
         transition: opacity 0.2s ease;
@@ -175,7 +190,10 @@
 
       .patient-grid
         .eingabefeld
-        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+        input[type="date"]::-webkit-calendar-picker-indicator:hover,
+      .patient-grid
+        .eingabefeld
+        input[type="month"]::-webkit-calendar-picker-indicator:hover {
         opacity: 1;
       }
 
@@ -190,16 +208,34 @@
         padding-right: 24px;
       }
 
+      /* Nicht editierbare Felder (BMI, Alter) – grau */
+      .patient-grid .eingabefeld.gray-input {
+        background: rgba(200, 200, 200, 0.4);
+        border-color: rgba(0, 0, 0, 0.07);
+        cursor: default;
+      }
+
+      .patient-grid .eingabefeld.gray-input:hover,
+      .patient-grid .eingabefeld.gray-input:focus-within {
+        transform: none;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        border-color: rgba(0, 0, 0, 0.07);
+      }
+
+      .patient-grid .eingabefeld.gray-input .einheit-label {
+        color: #7a828c;
+      }
+
       .patient-grid .eingabefeld input[readonly] {
         cursor: default;
-        color: #005fa3;
-        font-weight: 600;
-        border-bottom-color: rgba(0, 119, 204, 0.25);
+        color: #6b727c;
+        font-weight: 500;
+        border-bottom-color: rgba(0, 0, 0, 0.15);
       }
 
       .patient-grid .eingabefeld input[readonly]:focus {
         border-bottom-width: 1px;
-        border-bottom-color: rgba(0, 119, 204, 0.25);
+        border-bottom-color: rgba(0, 0, 0, 0.15);
         padding-bottom: 6px;
       }
 
@@ -224,7 +260,9 @@
         }
 
         .patient-grid {
+          --feld-h: 48px;
           grid-template-columns: 1fr;
+          grid-auto-rows: auto;
           column-gap: 0;
           row-gap: 12px;
         }
@@ -237,7 +275,7 @@
         .patient-grid .eingabefeld input,
         .patient-grid .eingabefeld select {
           font-size: 1.1rem;
-          min-height: 40px;
+          min-height: var(--feld-h);
         }
 
         .patient-grid .einheit-label {
@@ -327,8 +365,21 @@
         </div>
 
         <div class="eingabefeld">
-          <label class="einheit-label" for="geburtsdatum">Geburtsdatum</label>
-          <input type="date" id="geburtsdatum" autocomplete="off" />
+          <label class="einheit-label" for="geburtsdatum"
+            >Geburtsdatum (MM/JJJJ)</label
+          >
+          <input
+            type="month"
+            id="geburtsdatum"
+            min="1900-01"
+            autocomplete="off"
+            placeholder="JJJJ-MM"
+          />
+        </div>
+
+        <div class="eingabefeld gray-input">
+          <label class="einheit-label" for="alter">Alter (Jahre)</label>
+          <input type="text" id="alter" readonly tabindex="-1" placeholder="–" />
         </div>
 
         <div class="eingabefeld">
@@ -353,7 +404,7 @@
           />
         </div>
 
-        <div class="eingabefeld">
+        <div class="eingabefeld gray-input">
           <label class="einheit-label" for="bmi">BMI (kg/m²)</label>
           <input type="text" id="bmi" readonly tabindex="-1" placeholder="–" />
         </div>
@@ -522,6 +573,68 @@
         return isFinite(n) ? n : 0;
       }
 
+      // Geburtsdatum nur als Monat + Jahr (Eingabe "MM.JJJJ").
+      // Akzeptiert auch alte, bereits gespeicherte Werte wie "1985-03-12".
+      function parseGeburt(v) {
+        if (!v) return null;
+        const s = String(v).trim();
+        let m, y;
+        let r = s.match(/^(\d{1,2})[.\/-](\d{4})$/);
+        if (r) {
+          m = parseInt(r[1], 10);
+          y = parseInt(r[2], 10);
+        } else {
+          r = s.match(/^(\d{4})-(\d{1,2})(?:-\d{1,2})?$/);
+          if (!r) return null;
+          y = parseInt(r[1], 10);
+          m = parseInt(r[2], 10);
+        }
+        if (m < 1 || m > 12) return null;
+        if (y < 1900 || y > new Date().getFullYear()) return null;
+        return { m, y };
+      }
+
+      // Wert für das Monatsfeld: "1985-03"
+      function geburtISO(v) {
+        const g = parseGeburt(v);
+        return g ? `${g.y}-${String(g.m).padStart(2, "0")}` : v || "";
+      }
+
+      // Für die Datenbank: "3.1985" (ohne führende Null, wie bisher beim Datum)
+      function geburtPayload(v) {
+        const g = parseGeburt(v);
+        return g ? `${g.m}.${g.y}` : "";
+      }
+
+      // Alter zum Untersuchungsdatum (Feld "Datum"), sonst zu heute
+      function updateAlter() {
+        const alterEl = document.getElementById("alter");
+        const geburtEl = document.getElementById("geburtsdatum");
+        const datumEl = document.getElementById("datum");
+        if (!alterEl || !geburtEl) return;
+
+        const g = parseGeburt(geburtEl.value);
+        if (!g) {
+          alterEl.value = "";
+          return;
+        }
+
+        let refY, refM;
+        const iso = datumEl && datumEl.value.match(/^(\d{4})-(\d{2})-\d{2}$/);
+        if (iso) {
+          refY = parseInt(iso[1], 10);
+          refM = parseInt(iso[2], 10);
+        } else {
+          const now = new Date();
+          refY = now.getFullYear();
+          refM = now.getMonth() + 1;
+        }
+
+        let alter = refY - g.y;
+        if (refM < g.m) alter -= 1;
+        alterEl.value = alter >= 0 ? String(alter) : "";
+      }
+
       function formatDate(iso, removeLeadingZeros = false) {
         if (!iso) return "";
         const parts = String(iso).split("-");
@@ -593,6 +706,7 @@
         });
 
         updateBMI();
+        updateAlter();
       }
 
       // ============================================================
@@ -649,7 +763,24 @@
           const saved = localStorage.getItem("patient_" + id);
           if (saved !== null) el.value = saved;
         });
+        const geburtEl = document.getElementById("geburtsdatum");
+        if (geburtEl) {
+          geburtEl.max = new Date().toISOString().slice(0, 7);
+          geburtEl.value = geburtISO(geburtEl.value);
+        }
         updateBMI();
+
+        // Geburtsdatum (Monat/Jahr) + Alter live
+        ["input", "change"].forEach((evt) =>
+          geburtEl?.addEventListener(evt, () => {
+            localStorage.setItem("patient_geburtsdatum", geburtEl.value);
+            updateAlter();
+          }),
+        );
+        ["input", "change"].forEach((evt) =>
+          document.getElementById("datum")?.addEventListener(evt, updateAlter),
+        );
+        updateAlter();
 
         // Reset
         document
@@ -674,42 +805,42 @@
           const ernaehrungNum = parseDeNum(patientVal("ernaehrung"));
 
           const payload = {
-            datum: formatDate(patientVal("datum")),
-            gesamt_cholesterin: num("9Input"),
-            hdl_c: num("7Input"),
-            eldl_c: num("11Input"),
-            gldl_c: num("1Input"),
-            non_hdl_c: num("15Input"),
-            triglyzeride: num("3Input"),
-            apob: num("13Input"),
-            lp_a: num("18Input"),
-            hba1c: num("19Input"),
-            kreatinin: num("5Input"),
-            eremnant_c: num("21Input"),
-            eldl_cs: num("23Input"),
-            lp_a_crm: num("25Input"),
-            corrldl_crm: num("27Input"),
-            lp_a_caha: num("29Input"),
-            delta_ldl_c: num("33Input"),
-            non_hdl_c_apob: num("35Input"),
-            tg_apob: num("36Input"),
-            gesamtcholesterin_apob: num("37Input"),
-            ldl_c_apob: num("38Input"),
+            Datum: formatDate(patientVal("datum")),
+            Gesamt_Cholesterin: num("9Input"),
+            HDL_C: num("7Input"),
+            eLDL_C: num("11Input"),
+            gLDL_C: num("1Input"),
+            non_HDL_C: num("15Input"),
+            Triglyzeride: num("3Input"),
+            ApoB: num("13Input"),
+            Lp_a: num("18Input"),
+            HbA1c: num("19Input"),
+            Kreatinin: num("5Input"),
+            eRemnant_C: num("21Input"),
+            eLDL_CS: num("23Input"),
+            Lp_a_CRM: num("25Input"),
+            CorrLDL_CRM: num("27Input"),
+            Lp_a_CAHA: num("29Input"),
+            deltaLDL_C: num("33Input"),
+            Non_HDL_C_ApoB: num("35Input"),
+            TG_ApoB: num("36Input"),
+            Gesamtcholesterin_ApoB: num("37Input"),
+            LDL_C_ApoB: num("38Input"),
 
-            patienten_id: parseDeNum(patientVal("patientenId")),
-            geburtsdatum: formatDate(patientVal("geburtsdatum"), true),
-            groesse: parseGroesse(patientVal("groesse")),
-            gewicht: parseDeNum(patientVal("gewicht")),
-            blutdruck: parseBlutdruck(patientVal("blutdruck")),
-            geschlecht: patientVal("geschlecht"),
-            zigarettenprotag: parseDeNum(patientVal("zigaretten")),
-            familie: familieBool,
-            schritte: parseDeNum(patientVal("schritte")),
-            ernaehrung: ernaehrungNum,
-            schlaf: parseDeNum(patientVal("schlaf")),
+            PatientenID: parseDeNum(patientVal("patientenId")),
+            Geburtsdatum: geburtPayload(patientVal("geburtsdatum")),
+            Größe: parseGroesse(patientVal("groesse")),
+            Gewicht: parseDeNum(patientVal("gewicht")),
+            Blutdruck: parseBlutdruck(patientVal("blutdruck")),
+            Geschlecht: patientVal("geschlecht"),
+            Zigarettenprotag: parseDeNum(patientVal("zigaretten")),
+            Familie: familieBool,
+            Schritte: parseDeNum(patientVal("schritte")),
+            Ernährung: ernaehrungNum,
+            Schlaf: parseDeNum(patientVal("schlaf")),
           };
 
-          if (!payload.patienten_id) {
+          if (!payload.PatientenID) {
             showPopup(
               "Patienten-ID fehlt",
               "Bitte eine Patienten-ID eingeben.",
@@ -732,18 +863,9 @@
               return;
             }
 
-            const raw = await res.text();
-            let result = {};
-            try {
-              result = raw ? JSON.parse(raw) : {};
-            } catch {
-              result = { detail: raw };
-            }
+            const result = await res.json();
             if (!res.ok) {
-              throw new Error(
-                (typeof result.detail === "string" && result.detail) ||
-                  `Fehler beim Speichern (HTTP ${res.status})`,
-              );
+              throw new Error(result.detail || "Fehler beim Speichern");
             }
 
             showPopup(
