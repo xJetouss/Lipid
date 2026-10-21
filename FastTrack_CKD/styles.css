@@ -2,6 +2,12 @@
    KFRE RECHNER
 ========================= */
 
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 /* Ergebnis-Container */
 
 .results {
@@ -15,19 +21,12 @@
 
 .boxcontainer {
   padding: 18px;
-
   border-radius: 14px;
-
   background: rgba(255, 255, 255, 0.65);
-
   border: 1px solid rgba(0, 0, 0, 0.08);
-
   backdrop-filter: blur(6px);
-
   text-align: center;
-
   font-size: 1rem;
-
   transition:
     transform 0.2s ease,
     box-shadow 0.25s ease;
@@ -35,7 +34,6 @@
 
 .boxcontainer:hover {
   transform: translateY(-3px);
-
   box-shadow: 0 7px 18px rgba(0, 0, 0, 0.08);
 }
 
@@ -43,11 +41,8 @@
 
 .boxcontainer strong {
   display: block;
-
   margin-top: 8px;
-
   font-size: 1.6rem;
-
   color: #005fa3;
 }
 
@@ -55,27 +50,16 @@
 
 #calculate-button {
   display: block;
-
   width: 100%;
-
   margin-top: 28px;
-
   padding: 15px;
-
   border: none;
-
   border-radius: 14px;
-
   background: linear-gradient(90deg, #005fa3, #0095ff);
-
   color: white;
-
   font-size: 17px;
-
   font-weight: bold;
-
   cursor: pointer;
-
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -83,7 +67,6 @@
 
 #calculate-button:hover {
   transform: translateY(-3px);
-
   box-shadow: 0 10px 18px rgba(0, 0, 0, 0.2);
 }
 
@@ -95,37 +78,175 @@
 
 .info {
   margin-top: 20px;
-
   padding: 12px 20px;
-
   border-radius: 14px;
-
   background: rgb(75, 73, 73);
-
   color: white;
-
   font-size: 0.99rem;
-
   line-height: 1.5;
 }
 
-/* Mobile */
+/* =========================================================
+   KOPIERBEREICH (Look + Position wie Dialyse NU)
+
+   - Das Kopierformular ist ein normales <form class="copy-form">
+     und erbt Breite, Padding, Seitenabstände und Rundung von
+     der form-Regel in Lipid/styles.css -> exakt gleich breit
+     wie das Formular darüber (auch auf Tablet/Handy).
+   - Hier wird nur der vertikale Abstand gesetzt.
+   - Button-Regeln überschreiben die #CopyBtn-Regeln aus
+     Lipid/styles.css (spezifischerer Selektor + !important).
+========================================================= */
+
+/* ---------- Karte: nur vertikaler Abstand ---------- */
+html body form.copy-form {
+  margin-top: 22px !important;
+  margin-bottom: 40px !important;
+}
+
+/* ---------- Zeile: Text links, Button rechts (wie .outrow bei NU) ---------- */
+html body .copy-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* ---------- Textfeld (wie pre bei NU) ---------- */
+html body .copy-text {
+  flex: 1 1 auto !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 14px !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 13px !important;
+  font:
+    13px/1.55 ui-monospace,
+    Menlo,
+    monospace !important;
+  color: #1d2330 !important;
+  text-align: left !important;
+  word-break: break-word !important;
+  overflow-wrap: anywhere !important;
+}
+html body .copy-text p {
+  margin: 0 0 10px !important;
+}
+html body .copy-text ul {
+  margin: 0 0 10px !important;
+  padding-left: 20px !important;
+}
+html body .copy-text > :last-child {
+  margin-bottom: 0 !important;
+}
+
+/* ---------- Button: Position, Größe, Aussehen (wie #CopyBtn bei NU) ---------- */
+html body #CopyBtn.copy-btn,
+html body #CopyBtn.copy-btn:hover,
+html body #CopyBtn.copy-btn:active,
+html body #CopyBtn.copy-btn:focus,
+html body #CopyBtn.copy-btn:focus-visible {
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  translate: none !important;
+  transform: none !important;
+  flex: none !important;
+  width: 56px !important;
+  height: 56px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) !important;
+  scale: 1 !important;
+  outline: none !important;
+  z-index: auto !important;
+}
+
+/* display ohne !important, damit script.js es per style.display steuern kann */
+html body #CopyBtn.copy-btn {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  transition:
+    scale 0.12s ease,
+    background 0.25s ease,
+    box-shadow 0.12s ease !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Hover nur mit Maus (wie NU) */
+@media (hover: hover) and (pointer: fine) {
+  html body #CopyBtn.copy-btn:hover {
+    background: #d1cfcf !important;
+    scale: 1.12 !important;
+  }
+}
+
+/* Klick-Feedback */
+html body #CopyBtn.copy-btn:active {
+  background: #c4c4c4 !important;
+}
+
+/* ---------- Icons ---------- */
+html body #CopyBtn.copy-btn svg {
+  position: absolute !important;
+  width: 26px !important;
+  height: 26px !important;
+  fill: currentColor !important;
+  transition:
+    transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1),
+    opacity 0.25s !important;
+}
+html body #CopyBtn.copy-btn .ic-check {
+  fill: none !important;
+  stroke: #fff !important;
+  stroke-width: 2.6 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+  stroke-dasharray: 24 !important;
+  stroke-dashoffset: 24 !important;
+  opacity: 0 !important;
+  transform: scale(0.4) rotate(-30deg) !important;
+}
+
+/* ---------- Zustand "kopiert" (muss nach Hover/Active stehen) ---------- */
+html body #CopyBtn.copy-btn.done,
+html body #CopyBtn.copy-btn.done:hover,
+html body #CopyBtn.copy-btn.done:active,
+html body #CopyBtn.copy-btn.done:focus {
+  background: #1c8a3a !important;
+}
+html body #CopyBtn.copy-btn.done .ic-copy {
+  opacity: 0 !important;
+  transform: scale(0.3) rotate(90deg) !important;
+}
+html body #CopyBtn.copy-btn.done .ic-check {
+  opacity: 1 !important;
+  transform: none !important;
+  stroke-dashoffset: 0 !important;
+  transition:
+    stroke-dashoffset 0.4s ease 0.15s,
+    transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1) 0.1s,
+    opacity 0.2s !important;
+}
+
+/* =========================
+   MOBILE
+========================= */
 
 @media (max-width: 650px) {
-  #CopyBtn {
-    width: 42px;
-    height: 42px;
-    top: -14px;
-    right: -6px;
-    bottom: auto;
-    left: auto;
-  }
-  #CopyBtn:hover {
-    top: -16px;
-    right: -8px;
-    background: white;
-    scale: 1;
-  }
   .results {
     grid-template-columns: 1fr;
     gap: 12px;
@@ -141,39 +262,45 @@
 
   #calculate-button {
     padding: 16px;
-
     font-size: 18px;
-
     border-radius: 16px;
   }
-}
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+  /* Karte: Seitenabstand/Padding kommen von der Lipid-form-Regel (wie oben) */
+  html body form.copy-form {
+    margin-top: 16px !important;
+    margin-bottom: 24px !important;
+  }
 
-/* Container als Bezugsrahmen für den Copy-Button */
-.Triglyceride-warning {
-  position: relative;
-}
+  /* Button: wie bei NU 50px, bleibt neben dem Text (NICHT fixed am Rand) */
+  html body #CopyBtn.copy-btn,
+  html body #CopyBtn.copy-btn:hover,
+  html body #CopyBtn.copy-btn:active,
+  html body #CopyBtn.copy-btn:focus,
+  html body #CopyBtn.copy-btn:focus-visible {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    translate: none !important;
+    transform: none !important;
+    width: 50px !important;
+    height: 50px !important;
+    z-index: auto !important;
+  }
 
-/* Wrapper als Bezugsrahmen für den Copy-Button */
-
-.result-wrapper {
-  position: relative;
-  margin-top: 20px;
-}
-
-/* Resulttext verliert den eigenen Abstand, den macht der Wrapper */
-.result-wrapper .Triglyceride-warning {
-  margin-top: 0;
-}
-
-#CopyBtn {
-  bottom: -50px;
-  position: absolute;
-  transform: none;
-  z-index: 10;
+  /* Auf Touch keine Vergrößerung, nur Farbfeedback */
+  html body #CopyBtn.copy-btn:hover,
+  html body #CopyBtn.copy-btn:active {
+    scale: 1 !important;
+  }
+  html body #CopyBtn.copy-btn:active {
+    background: #e4e4e4 !important;
+  }
+  html body #CopyBtn.copy-btn.done,
+  html body #CopyBtn.copy-btn.done:hover,
+  html body #CopyBtn.copy-btn.done:active {
+    background: #1c8a3a !important;
+  }
 }

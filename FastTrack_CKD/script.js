@@ -628,33 +628,42 @@ if (resetButton) {
   resetButton.addEventListener("click", resetAllData);
 }
 
+
+
+// Reset-Button: Copy-Button nach Reset wieder verstecken
+const originalReset = resetAllData;
+resetAllData = function () {
+  originalReset();
+  const copyBtn = document.getElementById("CopyBtn");
+  if (copyBtn) copyBtn.style.display = "none";
+};
+
 // =========================
 // COPY BUTTON
 // =========================
 function initCopyButton() {
   const copyButton = document.getElementById("CopyBtn");
   const resultText = document.getElementById("Resulttext");
+  const copyCard = document.getElementById("CopyCard");
   if (!copyButton || !resultText) return;
 
-  // Button nur anzeigen, wenn ein Ergebnis vorhanden ist
-  const observer = new MutationObserver(() => {
+  // Karte nur anzeigen, wenn ein Ergebnis vorhanden ist
+  function updateVisibility() {
     const hasText = resultText.innerText.trim().length > 0;
+    if (copyCard) copyCard.style.display = hasText ? "" : "none";
     copyButton.style.display = hasText ? "" : "none";
-  });
-  observer.observe(resultText, {
+  }
+  new MutationObserver(updateVisibility).observe(resultText, {
     childList: true,
     subtree: true,
     characterData: true,
   });
-
-  // Original-SVG merken (einmalig)
-  const originalHTML = copyButton.innerHTML;
+  updateVisibility();
 
   copyButton.addEventListener("click", async () => {
     const text = resultText.innerText.trim();
 
     if (!text) {
-      // Leerer Zustand bleibt als Warnung — aber nur hier
       showPopup(
         "Keine Daten",
         "Es sind keine Ergebnisse zum Kopieren vorhanden.",
@@ -667,7 +676,6 @@ function initCopyButton() {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(text);
       } else {
-        // Fallback für unsichere Kontexte / ältere Browser
         const textarea = document.createElement("textarea");
         textarea.value = text;
         textarea.style.position = "fixed";
@@ -679,37 +687,18 @@ function initCopyButton() {
         document.body.removeChild(textarea);
       }
 
-      // ✅ Häkchen statt Popup
-      copyButton.innerHTML = `
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="black"
-        >
-          <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-        </svg>
-      `;
+      // Kopier-Symbol -> grüner Haken (wie NU)
+      copyButton.classList.add("done");
       copyButton.setAttribute("aria-label", "Text wurde kopiert");
-
-      setTimeout(() => {
-        copyButton.innerHTML = originalHTML;
+      clearTimeout(copyButton._t);
+      copyButton._t = setTimeout(() => {
+        copyButton.classList.remove("done");
         copyButton.setAttribute("aria-label", "Befund kopieren");
-      }, 1200);
+      }, 2000);
     } catch (err) {
-      // ❌ kein Popup, nur Konsole
       console.error("Copy fehlgeschlagen:", err);
     }
   });
 }
-
-// Reset-Button: Copy-Button nach Reset wieder verstecken
-const originalReset = resetAllData;
-resetAllData = function () {
-  originalReset();
-  const copyBtn = document.getElementById("CopyBtn");
-  if (copyBtn) copyBtn.style.display = "none";
-};
 
 initCopyButton();

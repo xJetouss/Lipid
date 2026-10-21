@@ -4,41 +4,22 @@
     <meta charset="UTF-8" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
-    <link rel="manifest" href="site.webmanifest" />
+    <link rel="icon" type="image/png" href="./favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./site.webmanifest" />
 
     <title>FastTrack CKD</title>
-    <style>
-      @media (max-width: 650px) {
-        html body #CopyBtn,
-        html body #CopyBtn:hover,
-        html body #CopyBtn:active,
-        html body #CopyBtn:focus {
-          position: fixed !important;
-          top: auto !important;
-          left: auto !important;
-          right: -8px !important;
-          bottom: 5px !important;
-          transform: none !important;
-          width: 52px !important;
-          height: 52px !important;
-          margin: 0 !important;
-          padding: 0 !important;
-          z-index: 9999 !important;
-        }
-      }
-    </style>
+
     <!-- CSS einbinden -->
     <link rel="stylesheet" href="../Lipid/styles.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="./styles.css" />
   </head>
 
   <body>
     <header class="header">
-      <a href="formular.html" id="site2Btn" class="BTN">
+      <a href="./Formular/" id="site2Btn" class="BTN">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24px"
@@ -161,30 +142,29 @@
           <strong id="risk5">—</strong>
         </div>
       </div>
-      <form>
-        <div class="result-wrapper">
-          <button
-            type="button"
-            id="CopyBtn"
-            class="BTN"
-            title="Befund kopieren"
-            style="display: none"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height="24"
-              width="24"
-              viewBox="0 -960 960 960"
-              fill="black"
-            >
-              <path
-                d="M360-240q-33 0-56.5-23.5T280-320v-480q0-33 23.5-56.5T360-880h360q33 0 56.5 23.5T800-800v480q0 33-23.5 56.5T720-240H360Zm0-80h360v-480H360v480ZM200-80q-33 0-56.5-23.5T120-160v-560h80v560h440v80H200Z"
-              />
-            </svg>
-          </button>
-          <div id="Resulttext" class="Triglyceride-warning"></div>
-        </div>
-      </form>
+          </form>
+
+    <!-- KOPIERBEREICH (eigenes Formular, Look wie NU) -->
+    <form class="copy-form" id="CopyCard" onsubzmit="return false;" style="display: none">
+      <div class="copy-row">
+        <div id="Resulttext" class="copy-text"></div>
+        <button
+          type="button"
+          class="copy-btn"
+          id="CopyBtn"
+          title="Befund kopieren"
+          aria-label="Befund kopieren"
+        >
+          <svg class="ic-copy" viewBox="0 0 24 24">
+            <path
+              d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"
+            />
+          </svg>
+          <svg class="ic-check" viewBox="0 0 24 24">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </button>
+      </div>
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
