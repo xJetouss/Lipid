@@ -601,6 +601,28 @@
       }
 
       // ============================================================
+      //  GEBURTSDATUM: nur Monat + Jahr anzeigen (z. B. 03.1974)
+      // ============================================================
+      function formatGeburtAnzeige(v) {
+        const s = String(v || "").trim();
+        let m, y;
+        let r = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); // 12.3.1974
+        if (r) {
+          m = r[2];
+          y = r[3];
+        } else if ((r = s.match(/^(\d{1,2})\.(\d{4})$/))) { // 3.1974
+          m = r[1];
+          y = r[2];
+        } else if ((r = s.match(/^(\d{4})-(\d{1,2})(?:-\d{1,2})?$/))) { // 1974-03-12
+          y = r[1];
+          m = r[2];
+        } else {
+          return s;
+        }
+        return `${String(parseInt(m, 10)).padStart(2, "0")}.${y}`;
+      }
+
+      // ============================================================
       //  DATEN LADEN
       // ============================================================
       async function loadData() {
@@ -645,7 +667,13 @@
             };
 
             addCell(index);
-            FIELDS.forEach((f) => addCell(row[f] || ""));
+            FIELDS.forEach((f) =>
+              addCell(
+                f === "Geburtsdatum"
+                  ? formatGeburtAnzeige(row[f])
+                  : row[f] || "",
+              ),
+            );
 
             const actionTd = document.createElement("td");
             const del = document.createElement("button");

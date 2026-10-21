@@ -52,6 +52,91 @@
       }
 
       /* ============================================================
+         LABORTABELLE – Drag & Drop (aus Dialyse NU übernommen)
+         ============================================================ */
+      .lab-card {
+        position: relative;
+        z-index: 1;
+        /* gleiche Box-Logik wie <form> (content-box), damit beide exakt
+           gleich breit sind */
+        background: rgba(255, 255, 255, 0.9);
+        max-width: 715px;
+        margin: 0 auto 24px;
+        padding: 20px 28px;
+        border-radius: 20px;
+        box-shadow:
+          0 3px 6px rgba(0, 0, 0, 0.05),
+          0 12px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .lab-drop {
+        padding: 26px 16px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.65);
+        border: 2px dashed #7fb4e6;
+        border-radius: 16px;
+        cursor: pointer;
+        outline: none;
+        transition:
+          background 0.2s,
+          border-color 0.2s;
+      }
+
+      .lab-drop:hover,
+      .lab-drop.over,
+      .lab-drop:focus {
+        background: rgba(0, 119, 204, 0.08);
+        border-color: #0077cc;
+      }
+
+      .lab-drop b {
+        font-size: 1.15rem;
+      }
+
+      .lab-drop p {
+        margin: 6px 0 0;
+        font-size: 0.95rem;
+        opacity: 0.65;
+      }
+
+      .lab-pill {
+        margin-top: 14px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #0077cc, #00a2ff);
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+
+      #labMsg {
+        min-height: 1.2em;
+        margin-top: 10px;
+        font-size: 0.95rem;
+      }
+
+      #labMsg.ok {
+        color: #1c8a3a;
+        font-weight: bold;
+      }
+
+      @media (max-width: 900px) {
+        .lab-card {
+          margin: 20px 20px 0;
+        }
+      }
+
+      @media (max-width: 650px) {
+        .lab-card {
+          margin: 12px 12px 0;
+          padding: 16px 14px;
+          border-radius: 18px;
+        }
+      }
+
+      /* ============================================================
          PATIENTENDATEN – Design
          ============================================================ */
       .patient-heading {
@@ -77,8 +162,8 @@
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
         grid-auto-rows: 1fr;
-        column-gap: 56px;
-        row-gap: 22px;
+        column-gap: 24px;
+        row-gap: 18px;
         width: 100%;
       }
 
@@ -87,7 +172,7 @@
         height: 100%;
         box-sizing: border-box;
         justify-content: space-between;
-        padding: 12px 16px;
+        padding: 10px 14px 6px;
         background: rgba(255, 255, 255, 0.75);
         border: 1px solid rgba(0, 0, 0, 0.07);
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
@@ -108,11 +193,11 @@
 
       .patient-grid .einheit-label {
         opacity: 0.75;
-        font-size: 0.82rem;
+        font-size: 0.78rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 2px;
+        letter-spacing: 0.3px;
+        margin: 0 0 2px;
         text-align: left;
         color: #4a5a6a;
         line-height: 1.3;
@@ -121,25 +206,35 @@
         text-overflow: ellipsis;
       }
 
+      /* Alle Eingaben (Text, Zahl, Datum, Monat, Auswahl) exakt gleich groß.
+         appearance: none verhindert, dass iOS/Safari Datumsfelder
+         eigenständig skaliert, zentriert oder zusammenfallen lässt. */
       .patient-grid .eingabefeld input,
       .patient-grid .eingabefeld select {
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        box-sizing: border-box;
         width: 100%;
+        min-width: 0;
+        max-width: 100%;
         height: var(--feld-h);
         min-height: var(--feld-h);
+        margin: 0;
+        padding: 0 2px;
         border: none;
         border-bottom: 1px solid #ccc;
-        background: transparent;
-        padding: 6px 2px;
-        font-size: 1.05rem;
+        border-radius: 0;
+        background-color: transparent;
+        font-family: inherit;
+        font-size: 1rem;
+        line-height: 1.2;
         color: #1a1a1a;
         text-align: left;
-        font-family: inherit;
+        outline: none;
         transition:
           border-color 0.2s ease,
           background 0.2s ease;
-        border-radius: 0;
-        outline: none;
-        box-sizing: border-box;
       }
 
       .patient-grid .eingabefeld input:focus,
@@ -147,7 +242,6 @@
         outline: none;
         border-bottom-color: #0077cc;
         border-bottom-width: 2px;
-        padding-bottom: 5px;
       }
 
       .patient-grid .eingabefeld input::placeholder {
@@ -175,6 +269,22 @@
         font-size: 1rem;
         cursor: pointer;
         color: #1a1a1a;
+        text-align: left;
+        -webkit-text-fill-color: currentColor;
+      }
+
+      /* iOS/Safari + Chrome: Innenleben der Datumsfelder neutralisieren,
+         damit leere Felder nicht kleiner sind als die anderen */
+      .patient-grid .eingabefeld input::-webkit-date-and-time-value {
+        text-align: left;
+        margin: 0;
+        padding: 0;
+        min-height: 1.2em;
+      }
+
+      .patient-grid .eingabefeld input::-webkit-datetime-edit,
+      .patient-grid .eingabefeld input::-webkit-datetime-edit-fields-wrapper {
+        padding: 0;
       }
 
       .patient-grid
@@ -185,6 +295,8 @@
         input[type="month"]::-webkit-calendar-picker-indicator {
         cursor: pointer;
         opacity: 0.55;
+        margin: 0;
+        padding: 0;
         transition: opacity 0.2s ease;
       }
 
@@ -206,6 +318,7 @@
         background-position: right 2px center;
         background-size: 14px;
         padding-right: 24px;
+        text-overflow: ellipsis;
       }
 
       /* Nicht editierbare Felder (BMI, Alter) – grau */
@@ -236,12 +349,11 @@
       .patient-grid .eingabefeld input[readonly]:focus {
         border-bottom-width: 1px;
         border-bottom-color: rgba(0, 0, 0, 0.15);
-        padding-bottom: 6px;
       }
 
       @media (max-width: 1100px) {
         .patient-grid {
-          column-gap: 40px;
+          column-gap: 24px;
         }
       }
 
@@ -268,13 +380,15 @@
         }
 
         .patient-grid .eingabefeld {
-          padding: 12px 16px;
+          padding: 10px 14px 6px;
           border-radius: 14px;
         }
 
+        /* mind. 16px, sonst zoomt iOS beim Antippen in das Feld */
         .patient-grid .eingabefeld input,
         .patient-grid .eingabefeld select {
           font-size: 1.1rem;
+          height: var(--feld-h);
           min-height: var(--feld-h);
         }
 
@@ -327,6 +441,20 @@
           />
         </svg>
       </button>
+    </div>
+
+    <!-- ================================
+         LABORTABELLE (Drag & Drop)
+         ================================ -->
+    <div class="lab-card">
+      <div class="lab-drop" id="labDrop" tabindex="0">
+        <b>Labortabelle hier hineinziehen</b>
+        <p>oder Text markieren und hineinziehen, oder ⌘V / Strg+V drücken</p>
+        <button type="button" class="lab-pill" id="labClip">
+          Aus Zwischenablage einfügen
+        </button>
+        <div id="labMsg"></div>
+      </div>
     </div>
 
     <!-- ================================
@@ -488,6 +616,7 @@
             placeholder="z. B. 7,5"
           />
         </div>
+
       </div>
     </form>
 
@@ -563,6 +692,217 @@
       ];
 
       const RECHNER_IDS = [1, 3, 5, 7, 9, 13, 17, 19];
+
+      // ============================================================
+      //  LABORTABELLE: Einlesen per Drag & Drop / Einfügen
+      //  Werte landen im localStorage (Schlüssel "<n>Input") und werden
+      //  auf der Auswertungsseite (index.html) in die Felder geladen
+      // ============================================================
+      const r0 = (n) => Math.round(n);
+      const r1 = (n) => Math.round(n * 10) / 10;
+      const r2 = (n) => Math.round(n * 100) / 100;
+
+      // [Feld-ID, localStorage-Key, Name, Label-Muster, Umrechnung nach Zielwert]
+      const LAB_FIELDS = [
+        {
+          id: "lab9",
+          key: "9Input",
+          name: "Gesamt-Cholesterin",
+          test: (l) =>
+            /^(gesamt[\s-]*)?cholesterin\b/.test(l) &&
+            !/hdl|ldl|non|remnant|quotient|index|\//.test(l),
+          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
+        },
+        {
+          id: "lab7",
+          key: "7Input",
+          name: "HDL-C",
+          test: (l) => /^hdl/.test(l) && !/quotient|\//.test(l),
+          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
+        },
+        {
+          id: "lab1",
+          key: "1Input",
+          name: "gLDL-C",
+          test: (l) =>
+            /^ldl/.test(l) &&
+            !/apherese|\bnach\b|\bn\.|berechn|calc|quotient|\//.test(l),
+          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
+        },
+        {
+          id: "lab3",
+          key: "3Input",
+          name: "Triglyzeride",
+          test: (l) => /^(trigly|triacylglycerin)/.test(l),
+          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.0114) : v),
+        },
+        {
+          id: "lab13",
+          key: "13Input",
+          name: "ApoB",
+          test: (l) => /^apo(lipoprotein)?[\s-]*b\b/.test(l),
+          conv: (v, u) => {
+            if (u.includes("umol")) return r0(v / 0.0195);
+            if (u.includes("mg/l")) return r1(v / 10);
+            if (u.includes("mg/dl")) return v;
+            if (u.includes("g/l") || (!u && v < 10)) return r0(v * 100);
+            return v;
+          },
+        },
+        {
+          id: "lab17",
+          key: "17Input",
+          name: "Lp(a)",
+          test: (l) =>
+            /^(lipoprotein[\s-]*\(?a\)?|lp\s*\(a\))/.test(l) &&
+            !/apherese|\bnach\b/.test(l),
+          conv: (v, u) => {
+            if (u.includes("mg/dl")) return v;
+            if (u.includes("mg/l")) return r1(v / 10);
+            return r1(v / 2.4); // nmol/l (Standard im Labor) -> mg/dl
+          },
+        },
+        {
+          id: "lab19",
+          key: "19Input",
+          name: "HbA1c",
+          test: (l) => /^(hba1c|hb\s*a1c|häm?oglobin\s*a1c)/.test(l),
+          conv: (v, u) =>
+            u.includes("mmol") || (!u && v > 20)
+              ? r1(v / 10.929 + 2.15)
+              : v,
+        },
+        {
+          id: "lab5",
+          key: "5Input",
+          name: "Kreatinin",
+          test: (l) =>
+            /^kreatinin/.test(l) && !/urin|clearance|gfr|harn/.test(l),
+          conv: (v, u) => (u.includes("umol") ? r2(v / 88.4) : v),
+        },
+      ];
+
+      function labNumber(cell) {
+        const m = String(cell || "")
+          .replace(/\s/g, "")
+          .replace(",", ".")
+          .match(/-?\d+(\.\d+)?/);
+        return m ? parseFloat(m[0]) : NaN;
+      }
+
+      function labParse(txt) {
+        const T = txt
+          .split(/[\t\n\r]+/)
+          .map((x) => x.trim())
+          .filter(Boolean);
+        const isVal = (x) => /^[<>]?\s*-?\d/.test(x || "");
+        const out = {};
+
+        LAB_FIELDS.forEach((f) => {
+          const i = T.findIndex(
+            (x, j) =>
+              f.test(x.toLowerCase()) && !x.includes(":") && isVal(T[j + 1]),
+          );
+          if (i < 0) return;
+
+          const cell = T[i + 1];
+          const v = labNumber(cell);
+          if (isNaN(v)) return;
+
+          // Einheit: Rest der Wertzelle oder die nächste Zelle
+          let unit = cell.replace(/^[<>]?\s*-?[\d.,]+/, "").trim();
+          if (!unit) {
+            const nx = T[i + 2] || "";
+            if (nx.length <= 14 && !isVal(nx)) unit = nx;
+          }
+          unit = unit.toLowerCase().replace(/[µμ]/g, "u");
+
+          const val = f.conv(v, unit);
+          if (isFinite(val)) out[f.id] = { key: f.key, val: String(val) };
+        });
+        return out;
+      }
+
+      // Laborwerte sind hier nicht sichtbar: sie werden nur gespeichert und
+      // erscheinen auf der Auswertungsseite (index.html) und beim Speichern.
+      function labSet(key, val) {
+        localStorage.setItem(key, val);
+      }
+
+      function labMessage(text, ok) {
+        const msg = document.getElementById("labMsg");
+        if (!msg) return;
+        msg.className = ok ? "ok" : "";
+        msg.textContent = text;
+      }
+
+      function labLoad(txt) {
+        const found = labParse(txt || "");
+        const n = Object.keys(found).length;
+        if (!n) {
+          labMessage("Keine Laborwerte erkannt.", false);
+          return;
+        }
+        Object.values(found).forEach((o) => labSet(o.key, o.val));
+
+        const fehlt = LAB_FIELDS.filter((f) => !(f.id in found)).map(
+          (f) => f.name,
+        );
+        labMessage(
+          fehlt.length
+            ? `${n} von ${LAB_FIELDS.length} Werten gelesen (zu sehen in der Auswertung). Fehlt: ${fehlt.join(", ")}.`
+            : `✓ Alle ${LAB_FIELDS.length} Werte gelesen (zu sehen in der Auswertung).`,
+          !fehlt.length,
+        );
+      }
+
+      function initLabDrop() {
+        const drop = document.getElementById("labDrop");
+        if (!drop) return;
+
+        ["dragenter", "dragover"].forEach((e) =>
+          drop.addEventListener(e, (ev) => {
+            ev.preventDefault();
+            drop.classList.add("over");
+          }),
+        );
+        ["dragleave", "drop"].forEach((e) =>
+          drop.addEventListener(e, (ev) => {
+            ev.preventDefault();
+            drop.classList.remove("over");
+          }),
+        );
+        drop.addEventListener("drop", async (ev) => {
+          let t = ev.dataTransfer.getData("text/plain");
+          if (!t && ev.dataTransfer.files[0])
+            t = await ev.dataTransfer.files[0].text();
+          labLoad(t || "");
+        });
+        drop.addEventListener("click", () => drop.focus());
+
+        document.getElementById("labClip")?.addEventListener("click", async (ev) => {
+          ev.stopPropagation();
+          try {
+            labLoad(await navigator.clipboard.readText());
+          } catch (e) {
+            labMessage(
+              "Zugriff auf die Zwischenablage nicht erlaubt. Bitte ⌘V / Strg+V drücken.",
+              false,
+            );
+          }
+        });
+
+        // Strg+V / ⌘V: nur mehrzellige Tabellen abfangen, normales Einfügen
+        // in Eingabefelder bleibt unberührt
+        document.addEventListener("paste", (ev) => {
+          if (ev.target.closest && ev.target.closest("input, textarea, select"))
+            return;
+          const t = (ev.clipboardData || window.clipboardData).getData("text");
+          if (t.split(/[\t\n\r]+/).length < 3) return;
+          ev.preventDefault();
+          labLoad(t);
+        });
+      }
 
       // ============================================================
       //  HILFSFUNKTIONEN
@@ -705,6 +1045,8 @@
           localStorage.removeItem(`${n}Input`);
         });
 
+        labMessage("", false);
+
         updateBMI();
         updateAlter();
       }
@@ -781,6 +1123,9 @@
           document.getElementById("datum")?.addEventListener(evt, updateAlter),
         );
         updateAlter();
+
+        // Labortabelle (Drag & Drop)
+        initLabDrop();
 
         // Reset
         document
