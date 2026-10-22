@@ -589,7 +589,7 @@ form {
 .umschalter {
   position: absolute;
   top: 50%;
-  left: 8px;             /* ← ganz links */
+  left: 16px;             /* ← ganz links */
   right: auto;             /* ← wichtig, sonst überschreibt right den Wert */
   transform: translateY(-50%);
   width: 3.2em;
