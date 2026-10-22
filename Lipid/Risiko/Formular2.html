@@ -26,195 +26,314 @@
 
     <link rel="stylesheet" href="../styles.css" />
 
-    <!-- Material Symbols: delete icon -->
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=delete"
-    />
-
     <style>
-      .data-box {
-        max-width: 1400px;
-        margin: 0 auto 30px;
+      html,
+      body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+      }
+
+      /* ============================================================
+         KARTEN – gleiche Box wie in Formular 1
+         ============================================================ */
+      .card {
+        position: relative;
+        z-index: 1;
+        box-sizing: content-box;
         background: rgba(255, 255, 255, 0.9);
+        max-width: 715px;
+        margin: 0 auto 24px;
+        padding: 28px;
         border-radius: 20px;
-        padding: 26px;
         box-shadow:
           0 3px 6px rgba(0, 0, 0, 0.05),
           0 12px 20px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(10px);
       }
 
-      .data-box h2 {
-        margin-top: 0;
+      .card-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 0 24px 0;
+        padding-bottom: 12px;
+        font-size: 1.35rem;
+        font-weight: 600;
+        letter-spacing: 0.3px;
         color: #005fa3;
+        border-bottom: 1px solid rgba(0, 95, 163, 0.12);
       }
 
+      .card-heading svg {
+        flex-shrink: 0;
+        opacity: 0.9;
+      }
+
+      /* ============================================================
+         TABELLE
+         ============================================================ */
       .table-wrapper {
-        overflow-x: auto;
         width: 100%;
+        max-height: 520px;
+        overflow: auto;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 13px;
+        -webkit-overflow-scrolling: touch;
       }
 
       table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 2800px;
+        width: max-content;
+        min-width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
         font-size: 14px;
+        color: #1d2330;
       }
 
       th,
       td {
-        padding: 8px 10px;
-        border-bottom: 1px solid #ddd;
+        padding: 10px 14px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
         text-align: left;
         white-space: nowrap;
       }
 
       th {
-        background: #f3f4f6;
         position: sticky;
         top: 0;
         z-index: 1;
+        background: #eaf3fc;
+        color: #4a5a6a;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
       }
 
-      tr:hover td {
-        background: #f9fafb;
+      tbody tr:last-child td {
+        border-bottom: none;
       }
 
-      /* ============================================================
-         DELETE-BUTTON (Icon)
-         ============================================================ */
+      tbody tr:hover td {
+        background: rgba(0, 119, 204, 0.06);
+      }
+
+      td.empty {
+        padding: 30px 14px;
+        text-align: center;
+        white-space: normal;
+        color: #6b7280;
+      }
+
+      td.empty.error {
+        color: #dc2626;
+      }
+
+      /* Löschen-Button */
       .delete-button {
-        background: #dc2626;
-        border: 0;
-        color: #fff;
-        width: 38px;
-        height: 38px;
-        border-radius: 10px;
-        cursor: pointer;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        width: 36px;
+        height: 36px;
         padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: rgba(220, 38, 38, 0.1);
+        color: #dc2626;
+        cursor: pointer;
         transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          scale 0.12s ease;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+      }
+
+      .delete-button svg {
+        width: 20px;
+        height: 20px;
+        fill: currentColor;
+        pointer-events: none;
+      }
+
+      .delete-button:hover {
+        background: #dc2626;
+        color: #fff;
+      }
+
+      .delete-button:active {
+        scale: 0.92;
+      }
+
+      /* ============================================================
+         BUTTONS (Pillen wie in Formular 1)
+         ============================================================ */
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #0077cc, #00a2ff);
+        color: #fff;
+        font-family: inherit;
+        font-size: 1rem;
+        cursor: pointer;
+        transition:
+          filter 0.2s ease,
           background 0.2s ease,
           scale 0.12s ease;
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
       }
 
-      .delete-button:hover {
-        background: #b91c1c;
+      .pill:hover {
+        filter: brightness(1.08);
       }
 
-      .delete-button:active {
-        scale: 0.94;
+      .pill:active {
+        scale: 0.97;
       }
 
-      .delete-button .material-symbols-outlined {
-        font-size: 20px;
-        color: #fff;
-        font-variation-settings:
-          "FILL" 0,
-          "wght" 500,
-          "GRAD" 0,
-          "opsz" 24;
-        pointer-events: none;
-        user-select: none;
+      .pill svg {
+        flex-shrink: 0;
+        fill: currentColor;
       }
 
-      .empty {
-        text-align: center;
-        color: #6b7280;
-        padding: 30px;
+      .pill.ghost {
+        background: rgba(255, 255, 255, 0.75);
+        border-color: rgba(0, 119, 204, 0.35);
+        color: #005fa3;
       }
 
+      .pill.ghost:hover {
+        background: rgba(0, 119, 204, 0.08);
+        filter: none;
+      }
+
+      .card-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 18px;
+      }
+
+      /* ============================================================
+         DIAGRAMM
+         ============================================================ */
       .chart-controls {
+        display: flex;
+        gap: 14px;
+        align-items: stretch;
+        flex-wrap: wrap;
+      }
+
+      .chart-controls .eingabefeld {
+        flex: 1;
+        min-width: 200px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 10px 14px 6px;
+        background: rgba(255, 255, 255, 0.75);
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        border-radius: 14px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .chart-controls .eingabefeld:focus-within {
+        border-color: #0077cc;
+        box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.12);
+      }
+
+      .chart-controls .einheit-label {
+        margin: 0 0 2px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        text-align: left;
+        color: #4a5a6a;
+        opacity: 0.75;
+      }
+
+      .chart-controls input {
+        -webkit-appearance: none;
+        appearance: none;
+        display: block;
+        box-sizing: border-box;
+        width: 100%;
+        height: 44px;
+        margin: 0;
+        padding: 0 2px;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        border-radius: 0;
+        background: transparent;
+        font-family: inherit;
+        font-size: 1rem;
+        color: #1a1a1a;
+        outline: none;
+        transition: border-color 0.2s ease;
+      }
+
+      .chart-controls input:focus {
+        border-bottom-color: #0077cc;
+        border-bottom-width: 2px;
+      }
+
+      .chart-controls input::placeholder {
+        color: #b0b8c2;
+      }
+
+      .chart-buttons {
         display: flex;
         gap: 10px;
         align-items: center;
         flex-wrap: wrap;
-        margin-top: 12px;
-      }
-
-      .chart-controls input {
-        flex: 1;
-        min-width: 220px;
-        padding: 12px 14px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        border-radius: 12px;
-        font-size: 15px;
-        outline: none;
-      }
-
-      .chart-controls input:focus {
-        border-color: #0077cc;
-        box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.15);
-      }
-
-      .chart-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 12px 18px;
-        border: 0;
-        border-radius: 12px;
-        background: #16a34a;
-        color: #fff;
-        font-size: 15px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-
-      .chart-button:hover {
-        background: #15803d;
-      }
-
-      .fullscreen-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 12px 18px;
-        border: 0;
-        border-radius: 12px;
-        background: #2563eb;
-        color: #fff;
-        font-size: 15px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-
-      .fullscreen-button:hover {
-        background: #1d4ed8;
-      }
-
-      .chart-button svg,
-      .fullscreen-button svg {
-        flex-shrink: 0;
       }
 
       #chart-message {
-        margin: 12px 0 10px;
-        text-align: center;
         min-height: 1.2em;
+        margin: 14px 0 0;
+        font-size: 0.95rem;
+        text-align: center;
+      }
+
+      #chart-message .error {
+        color: #dc2626;
+      }
+
+      #chart-message .success {
+        color: #1c8a3a;
+        font-weight: bold;
       }
 
       .chart-container {
         position: relative;
         width: 100%;
-        height: 750px;
-        margin-top: 15px;
-        border: 1px solid #ddd;
-        border-radius: 12px;
+        height: 640px;
+        margin-top: 14px;
         overflow: hidden;
         background: #fff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 13px;
       }
 
       .patient-chart {
+        display: none;
         width: 100%;
         height: 100%;
         border: 0;
-        display: none;
         background: #fff;
       }
 
@@ -222,23 +341,53 @@
       .chart-container:-webkit-full-screen {
         width: 100vw;
         height: 100vh;
-        border-radius: 0;
-        border: 0;
         margin: 0;
+        border: 0;
+        border-radius: 0;
       }
 
-      .chart-container:fullscreen .patient-chart,
-      .chart-container:-webkit-full-screen .patient-chart {
-        width: 100%;
-        height: 100%;
+      /* ============================================================
+         HANDY
+         ============================================================ */
+      @media (max-width: 900px) {
+        .card {
+          margin: 0 20px 20px;
+        }
       }
 
-      .error {
-        color: #dc2626;
-      }
+      @media (max-width: 650px) {
+        .card {
+          margin: 0 12px 16px;
+          padding: 18px 14px;
+          border-radius: 18px;
+        }
 
-      .success {
-        color: #16a34a;
+        .card-heading {
+          margin-bottom: 18px;
+          font-size: 1.15rem;
+        }
+
+        .chart-controls {
+          flex-direction: column;
+        }
+
+        .chart-controls .eingabefeld {
+          min-width: 0;
+        }
+
+        /* mind. 16px, sonst zoomt iOS beim Antippen in das Feld */
+        .chart-controls input {
+          height: 48px;
+          font-size: 1.1rem;
+        }
+
+        .chart-buttons .pill {
+          flex: 1;
+        }
+
+        .chart-container {
+          height: 460px;
+        }
       }
     </style>
   </head>
@@ -248,25 +397,6 @@
          HEADER
          ================================ -->
     <div class="header">
-      <a
-        href="../site2.html"
-        id="site2Btn"
-        class="BTN"
-        title="Zurück zu Formular 1"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="FFFFFF"
-        >
-          <path
-            d="M280-160 80-360l200-200 56 57-103 103h287v80H233l103 103-56 57Zm400-240-56-57 103-103H440v-80h287L624-743l56-57 200 200-200 200Z"
-          />
-        </svg>
-      </a>
-
       <h1>Daten &amp; Diagramm</h1>
 
       <button type="button" id="resetBtn" class="BTN" title="Zurücksetzen">
@@ -284,11 +414,26 @@
       </button>
     </div>
 
-    <!-- ============================================
+    <!-- ================================
          TABELLE
-    ============================================= -->
-    <div class="data-box">
-      <h2>Gespeicherte Daten</h2>
+         ================================ -->
+    <section class="card">
+      <h2 class="card-heading">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="22"
+          width="22"
+          viewBox="0 0 24 24"
+          fill="#005fa3"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M3 3h18v18H3V3Zm2 2v4h14V5H5Zm0 6v3h4v-3H5Zm6 0v3h8v-3h-8Zm-6 5v3h4v-3H5Zm6 0v3h8v-3h-8Z"
+          />
+        </svg>
+        Gespeicherte Daten
+      </h2>
+
       <div class="table-wrapper">
         <table>
           <thead>
@@ -337,66 +482,78 @@
         </table>
       </div>
 
-      <button
-        class="chart-button"
-        style="margin-top: 16px"
-        onclick="loadData()"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="20"
-          width="20"
-          viewBox="0 -960 960 960"
-          fill="#FFFFFF"
-        >
-          <path
-            d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
-          />
-        </svg>
-      </button>
-    </div>
-
-    <!-- ============================================
-         DIAGRAMM
-    ============================================= -->
-    <div class="data-box">
-      <h2>Patientendiagramm (Netzdiagramm)</h2>
-      <div class="chart-controls">
-        <input
-          id="chartPatientId"
-          type="text"
-          placeholder="PatientenID z.B. 1111"
-        />
-        <button class="chart-button" onclick="loadPatientChart()">
+      <div class="card-actions">
+        <button type="button" class="pill" id="reloadBtn">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="20"
             width="20"
             viewBox="0 -960 960 960"
-            fill="#FFFFFF"
           >
             <path
-              d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"
+              d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
             />
           </svg>
-          Diagramm anzeigen
-        </button>
-        <button class="fullscreen-button" onclick="toggleChartFullscreen()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            height="20"
-            width="20"
-            viewBox="0 -960 960 960"
-            fill="#FFFFFF"
-          >
-            <path
-              d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"
-            />
-          </svg>
-          Vollbild
+          Aktualisieren
         </button>
       </div>
+    </section>
+
+    <!-- ================================
+         DIAGRAMM
+         ================================ -->
+    <section class="card">
+      <h2 class="card-heading">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="22"
+          width="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#005fa3"
+          stroke-width="2"
+          stroke-linejoin="round"
+        >
+          <polygon points="12,2.5 21,9 17.5,20 6.5,20 3,9" />
+          <polygon points="12,8 16.2,11 14.6,16 9.4,16 7.8,11" />
+        </svg>
+        Patientendiagramm
+      </h2>
+
+      <div class="chart-controls">
+        <div class="eingabefeld">
+          <label class="einheit-label" for="chartPatientId">Patienten-ID</label>
+          <input
+            id="chartPatientId"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="z. B. 1111"
+          />
+        </div>
+
+        <div class="chart-buttons">
+          <button type="button" class="pill" id="showChartBtn">
+            Diagramm anzeigen
+          </button>
+          <button type="button" class="pill ghost" id="fullscreenBtn">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="20"
+              width="20"
+              viewBox="0 -960 960 960"
+            >
+              <path
+                d="M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"
+              />
+            </svg>
+            Vollbild
+          </button>
+        </div>
+      </div>
+
       <div id="chart-message"></div>
+
       <div id="chart-container" class="chart-container">
         <iframe
           id="patient-chart"
@@ -404,7 +561,7 @@
           title="Patientendiagramm"
         ></iframe>
       </div>
-    </div>
+    </section>
 
     <a href="Formular1.html" id="Back_BTN" class="BTN" title="Zurück">
       <svg
@@ -417,12 +574,13 @@
         <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
       </svg>
     </a>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../auth.js" defer></script>
     <script src="../script.js" defer></script>
     <script>
       // ============================================================
-      //  FIELDS
+      //  KONSTANTEN
       // ============================================================
       const FIELDS = [
         "Datum",
@@ -459,9 +617,9 @@
         "Schlaf",
       ];
 
-      // ============================================================
-      //  KONSTANTEN
-      // ============================================================
+      // Spalten in der Tabelle: ID + Felder + Aktion
+      const COLS = FIELDS.length + 2;
+
       const PATIENT_IDS = [
         "datum",
         "patientenId",
@@ -479,15 +637,333 @@
 
       const RECHNER_IDS = [1, 3, 5, 7, 9, 13, 17, 19];
 
+      const TRASH_ICON =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12ZM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4Z"/></svg>';
+
+      const $ = (id) => document.getElementById(id);
+
       // ============================================================
-      //  HILFE: Gast-Erkennung ohne harten Crash
+      //  HILFSFUNKTIONEN
       // ============================================================
+      // Gast-Erkennung ohne harten Crash
       function guestMode() {
         return typeof isGuest === "function" && isGuest();
       }
 
-      function hasLogin() {
-        return typeof isLoggedIn === "function" && isLoggedIn();
+      function isFullscreen() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement);
+      }
+
+      async function exitFullscreen() {
+        if (document.exitFullscreen) await document.exitFullscreen();
+        else if (document.webkitExitFullscreen)
+          await document.webkitExitFullscreen();
+      }
+
+      // Hinweiszeile in der Tabelle (mit textContent, kein innerHTML)
+      function setTableMessage(text, isError = false) {
+        const body = $("dataBody");
+        body.replaceChildren();
+
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = COLS;
+        td.className = "empty" + (isError ? " error" : "");
+        td.textContent = text;
+        tr.appendChild(td);
+        body.appendChild(tr);
+      }
+
+      // Statuszeile unter dem Diagramm-Formular
+      function setChartMessage(text, type) {
+        const msg = $("chart-message");
+        msg.replaceChildren();
+        if (!text) return;
+
+        const span = document.createElement("span");
+        if (type) span.className = type;
+        span.textContent = text;
+        msg.appendChild(span);
+      }
+
+      // ============================================================
+      //  CSV PARSER
+      // ============================================================
+      function parseCSV(csv) {
+        const lines = csv.trim().split(/\r?\n/);
+        if (lines.length <= 1) return [];
+
+        const headers = lines[0].split(",");
+        const rows = [];
+
+        for (let i = 1; i < lines.length; i++) {
+          const values = lines[i].split(",");
+          const row = {};
+          headers.forEach((h, idx) => {
+            row[h.trim()] = values[idx] || "";
+          });
+          rows.push(row);
+        }
+        return rows;
+      }
+
+      // ============================================================
+      //  GEBURTSDATUM: nur Monat + Jahr anzeigen (z. B. 03.1974)
+      // ============================================================
+      function formatGeburtAnzeige(v) {
+        const s = String(v || "").trim();
+        let m, y;
+        let r = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); // 12.3.1974
+        if (r) {
+          m = r[2];
+          y = r[3];
+        } else if ((r = s.match(/^(\d{1,2})\.(\d{4})$/))) {
+          // 3.1974
+          m = r[1];
+          y = r[2];
+        } else if ((r = s.match(/^(\d{4})-(\d{1,2})(?:-\d{1,2})?$/))) {
+          // 1974-03-12
+          y = r[1];
+          m = r[2];
+        } else {
+          return s;
+        }
+        return `${String(parseInt(m, 10)).padStart(2, "0")}.${y}`;
+      }
+
+      // ============================================================
+      //  DATEN LADEN
+      // ============================================================
+      async function loadData() {
+        setTableMessage("Daten werden geladen...");
+
+        // Gast → gar nicht erst laden, direkt Hinweis
+        if (guestMode()) {
+          setTableMessage(
+            "Als Gast können Sie keine gespeicherten Daten einsehen. Bitte loggen Sie sich ein.",
+          );
+          return;
+        }
+
+        try {
+          const res = await fetch(`${API_URL}/read`, {
+            headers: authHeaders(),
+          });
+
+          if (res.status === 401) {
+            // Token abgelaufen / nicht eingeloggt → kein harter Logout
+            setTableMessage(
+              "Sitzung abgelaufen oder nicht angemeldet. Bitte neu einloggen.",
+            );
+            return;
+          }
+          if (!res.ok) throw new Error("Fehler beim Laden");
+
+          const result = await res.json();
+          const rows = parseCSV(result.data || "");
+
+          if (!rows.length) {
+            setTableMessage("Noch keine Daten vorhanden.");
+            return;
+          }
+
+          const body = $("dataBody");
+          body.replaceChildren();
+
+          rows.forEach((row, index) => {
+            const tr = document.createElement("tr");
+
+            const addCell = (val) => {
+              const td = document.createElement("td");
+              td.textContent = val ?? "";
+              tr.appendChild(td);
+            };
+
+            addCell(index);
+            FIELDS.forEach((f) =>
+              addCell(
+                f === "Geburtsdatum"
+                  ? formatGeburtAnzeige(row[f])
+                  : row[f] || "",
+              ),
+            );
+
+            const actionTd = document.createElement("td");
+            const del = document.createElement("button");
+            del.type = "button";
+            del.className = "delete-button";
+            del.title = "Zeile löschen";
+            del.setAttribute("aria-label", "Zeile löschen");
+            del.innerHTML = TRASH_ICON;
+            del.addEventListener("click", () => deleteRow(index));
+            actionTd.appendChild(del);
+            tr.appendChild(actionTd);
+
+            body.appendChild(tr);
+          });
+        } catch (err) {
+          console.error(err);
+          setTableMessage("Daten konnten nicht geladen werden.", true);
+          showPopup(
+            "Fehler beim Laden",
+            "Die gespeicherten Daten konnten nicht geladen werden.",
+            "error",
+          );
+        }
+      }
+
+      // ============================================================
+      //  LÖSCHEN
+      // ============================================================
+      async function deleteRow(id) {
+        const question = `Zeile ${id} wirklich unwiderruflich löschen?`;
+        const ok =
+          typeof confirmPopup === "function"
+            ? await confirmPopup("Zeile löschen?", question)
+            : confirm(question);
+        if (!ok) return;
+
+        try {
+          const res = await fetch(`${API_URL}/delete-row/${id}`, {
+            method: "DELETE",
+            headers: authHeaders(),
+          });
+
+          if (res.status === 401) {
+            showPopup(
+              "Nicht angemeldet",
+              "Ihre Sitzung ist abgelaufen. Bitte neu einloggen.",
+              "warning",
+            );
+            return;
+          }
+
+          const result = await res.json();
+          if (!res.ok) throw new Error(result.detail || "Fehler beim Löschen");
+
+          loadData();
+          showPopup("Gelöscht", `Zeile ${id} wurde entfernt.`, "success");
+        } catch (err) {
+          showPopup("Fehler beim Löschen", err.message, "error");
+        }
+      }
+
+      // ============================================================
+      //  DIAGRAMM
+      // ============================================================
+      async function loadPatientChart() {
+        const chart = $("patient-chart");
+
+        const pid = $("chartPatientId").value.trim();
+        if (!pid) {
+          setChartMessage("Bitte eine Patienten-ID eingeben.", "error");
+          showPopup(
+            "Patienten-ID fehlt",
+            "Bitte eine Patienten-ID eingeben.",
+            "warning",
+          );
+          return;
+        }
+
+        const numericId = Number(pid);
+        if (!Number.isFinite(numericId)) {
+          setChartMessage("Ungültige Patienten-ID.", "error");
+          showPopup(
+            "Ungültige Patienten-ID",
+            "Bitte eine gültige Zahl eingeben.",
+            "warning",
+          );
+          return;
+        }
+        const id = String(numericId);
+
+        setChartMessage("Diagramm wird geladen...");
+        chart.style.display = "none";
+
+        try {
+          const res = await fetch(`${API_URL}/plot/${encodeURIComponent(id)}`, {
+            headers: authHeaders(),
+          });
+
+          if (res.status === 401) {
+            setChartMessage("Nicht angemeldet.", "error");
+            showPopup(
+              "Nicht angemeldet",
+              "Bitte einloggen, um das Diagramm zu laden.",
+              "warning",
+            );
+            return;
+          }
+          if (res.status === 404) {
+            setChartMessage(
+              "Keine Daten für diese Patienten-ID gefunden.",
+              "error",
+            );
+            showPopup(
+              "Keine Daten",
+              "Für diese Patienten-ID wurden keine Daten gefunden.",
+              "info",
+            );
+            return;
+          }
+          if (!res.ok) throw new Error("Fehler beim Laden des Diagramms.");
+
+          const html = await res.text();
+          const url = URL.createObjectURL(
+            new Blob([html], { type: "text/html" }),
+          );
+
+          if (chart.dataset.blob) URL.revokeObjectURL(chart.dataset.blob);
+          chart.dataset.blob = url;
+          chart.src = url;
+          chart.style.display = "block";
+
+          setChartMessage(`Diagramm für Patienten-ID ${id}`, "success");
+        } catch (err) {
+          console.error(err);
+          setChartMessage(err.message, "error");
+          showPopup("Fehler beim Diagramm", err.message, "error");
+        }
+      }
+
+      async function toggleChartFullscreen() {
+        const container = $("chart-container");
+
+        try {
+          if (isFullscreen()) {
+            await exitFullscreen();
+          } else if (container.requestFullscreen) {
+            await container.requestFullscreen();
+          } else if (container.webkitRequestFullscreen) {
+            await container.webkitRequestFullscreen();
+          }
+        } catch (e) {
+          console.error("Fullscreen Fehler:", e);
+          showPopup(
+            "Vollbild nicht möglich",
+            "Der Browser konnte den Vollbildmodus nicht starten.",
+            "error",
+          );
+        }
+      }
+
+      // ============================================================
+      //  RESET
+      // ============================================================
+      function resetPage() {
+        $("chartPatientId").value = "";
+        setChartMessage("");
+
+        const chart = $("patient-chart");
+        chart.style.display = "none";
+        chart.src = "about:blank";
+
+        if (isFullscreen()) exitFullscreen();
+
+        PATIENT_IDS.forEach((id) => localStorage.removeItem("patient_" + id));
+        RECHNER_IDS.forEach((n) => localStorage.removeItem(`${n}Input`));
+
+        loadData();
       }
 
       // ============================================================
@@ -528,323 +1004,20 @@
       document.addEventListener("DOMContentLoaded", () => {
         document.body.classList.add("page-loaded");
 
-        // Kein requireLogin() mehr → Gäste erlaubt.
-        // (Gäste sehen leere Tabelle + Hinweis, kein Redirect.)
-
+        // Kein requireLogin(): Gäste sehen eine Hinweiszeile statt Redirect.
         loadData();
 
-        document
-          .getElementById("chartPatientId")
-          .addEventListener("keydown", (e) => {
-            if (e.key === "Enter") loadPatientChart();
-          });
+        $("reloadBtn").addEventListener("click", loadData);
+        $("showChartBtn").addEventListener("click", loadPatientChart);
+        $("fullscreenBtn").addEventListener("click", toggleChartFullscreen);
+        $("resetBtn").addEventListener("click", resetPage);
 
-        document
-          .getElementById("resetBtn")
-          ?.addEventListener("click", resetPage);
+        $("chartPatientId").addEventListener("keydown", (e) => {
+          if (e.key === "Enter") loadPatientChart();
+        });
 
         initPageTransitions();
       });
-
-      // ============================================================
-      //  RESET
-      // ============================================================
-      function resetPage() {
-        const pidInput = document.getElementById("chartPatientId");
-        if (pidInput) pidInput.value = "";
-
-        const msg = document.getElementById("chart-message");
-        if (msg) msg.innerHTML = "";
-
-        const chart = document.getElementById("patient-chart");
-        if (chart) {
-          chart.style.display = "none";
-          chart.src = "about:blank";
-        }
-
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          if (document.exitFullscreen) document.exitFullscreen();
-          else if (document.webkitExitFullscreen)
-            document.webkitExitFullscreen();
-        }
-
-        PATIENT_IDS.forEach((id) => {
-          localStorage.removeItem("patient_" + id);
-        });
-
-        RECHNER_IDS.forEach((n) => {
-          localStorage.removeItem(`${n}Input`);
-        });
-
-        loadData();
-      }
-
-      // ============================================================
-      //  CSV PARSER
-      // ============================================================
-      function parseCSV(csv) {
-        const lines = csv.trim().split(/\r?\n/);
-        if (lines.length <= 1) return [];
-
-        const headers = lines[0].split(",");
-        const rows = [];
-
-        for (let i = 1; i < lines.length; i++) {
-          const values = lines[i].split(",");
-          const row = {};
-          headers.forEach((h, idx) => {
-            row[h.trim()] = values[idx] || "";
-          });
-          rows.push(row);
-        }
-        return rows;
-      }
-
-      // ============================================================
-      //  GEBURTSDATUM: nur Monat + Jahr anzeigen (z. B. 03.1974)
-      // ============================================================
-      function formatGeburtAnzeige(v) {
-        const s = String(v || "").trim();
-        let m, y;
-        let r = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); // 12.3.1974
-        if (r) {
-          m = r[2];
-          y = r[3];
-        } else if ((r = s.match(/^(\d{1,2})\.(\d{4})$/))) { // 3.1974
-          m = r[1];
-          y = r[2];
-        } else if ((r = s.match(/^(\d{4})-(\d{1,2})(?:-\d{1,2})?$/))) { // 1974-03-12
-          y = r[1];
-          m = r[2];
-        } else {
-          return s;
-        }
-        return `${String(parseInt(m, 10)).padStart(2, "0")}.${y}`;
-      }
-
-      // ============================================================
-      //  DATEN LADEN
-      // ============================================================
-      async function loadData() {
-        const body = document.getElementById("dataBody");
-        body.innerHTML = `<tr><td colspan="34" class="empty">Daten werden geladen...</td></tr>`;
-
-        // Gast → gar nicht erst laden, direkt Hinweis
-        if (guestMode()) {
-          body.innerHTML = `<tr><td colspan="34" class="empty">Als Gast können Sie keine gespeicherten Daten einsehen. Bitte loggen Sie sich ein.</td></tr>`;
-          return;
-        }
-
-        try {
-          const res = await fetch(`${API_URL}/read`, {
-            headers: authHeaders(),
-          });
-
-          if (res.status === 401) {
-            // Token abgelaufen / nicht eingeloggt → kein harter Logout
-            body.innerHTML = `<tr><td colspan="34" class="empty">Sitzung abgelaufen oder nicht angemeldet. Bitte neu einloggen.</td></tr>`;
-            return;
-          }
-          if (!res.ok) throw new Error("Fehler beim Laden");
-
-          const result = await res.json();
-          const rows = parseCSV(result.data || "");
-
-          if (!rows.length) {
-            body.innerHTML = `<tr><td colspan="34" class="empty">Noch keine Daten vorhanden.</td></tr>`;
-            return;
-          }
-
-          body.innerHTML = "";
-
-          rows.forEach((row, index) => {
-            const tr = document.createElement("tr");
-
-            const addCell = (val) => {
-              const td = document.createElement("td");
-              td.textContent = val ?? "";
-              tr.appendChild(td);
-            };
-
-            addCell(index);
-            FIELDS.forEach((f) =>
-              addCell(
-                f === "Geburtsdatum"
-                  ? formatGeburtAnzeige(row[f])
-                  : row[f] || "",
-              ),
-            );
-
-            const actionTd = document.createElement("td");
-            const del = document.createElement("button");
-            del.type = "button";
-            del.className = "delete-button";
-            del.setAttribute("aria-label", "Zeile löschen");
-            del.setAttribute("title", "Zeile löschen");
-            del.innerHTML =
-              '<span class="material-symbols-outlined">delete</span>';
-            del.addEventListener("click", () => deleteRow(index));
-            actionTd.appendChild(del);
-            tr.appendChild(actionTd);
-
-            body.appendChild(tr);
-          });
-        } catch (err) {
-          console.error(err);
-          body.innerHTML = `<tr><td colspan="34" class="empty error">Daten konnten nicht geladen werden.</td></tr>`;
-          showPopup(
-            "Fehler beim Laden",
-            "Die gespeicherten Daten konnten nicht geladen werden.",
-            "error",
-          );
-        }
-      }
-
-      // ============================================================
-      //  LÖSCHEN
-      // ============================================================
-      async function deleteRow(id) {
-        // Sicherer Aufruf: nimm confirmPopup, wenn vorhanden
-        let ok;
-        if (typeof confirmPopup === "function") {
-          ok = await confirmPopup(
-            "Zeile löschen?",
-            `Zeile ${id} wirklich unwiderruflich löschen?`,
-          );
-        } else {
-          ok = confirm(`Zeile ${id} wirklich unwiderruflich löschen?`);
-        }
-        if (!ok) return;
-
-        try {
-          const res = await fetch(`${API_URL}/delete-row/${id}`, {
-            method: "DELETE",
-            headers: authHeaders(),
-          });
-
-          if (res.status === 401) {
-            showPopup(
-              "Nicht angemeldet",
-              "Ihre Sitzung ist abgelaufen. Bitte neu einloggen.",
-              "warning",
-            );
-            return;
-          }
-
-          const result = await res.json();
-          if (!res.ok) throw new Error(result.detail || "Fehler beim Löschen");
-
-          loadData();
-          showPopup("Gelöscht", `Zeile ${id} wurde entfernt.`, "success");
-        } catch (err) {
-          showPopup("Fehler beim Löschen", err.message, "error");
-        }
-      }
-
-      // ============================================================
-      //  DIAGRAMM
-      // ============================================================
-      async function loadPatientChart() {
-        const input = document.getElementById("chartPatientId");
-        const message = document.getElementById("chart-message");
-        const chart = document.getElementById("patient-chart");
-
-        let pid = input.value.trim();
-        if (!pid) {
-          message.innerHTML =
-            '<span class="error">Bitte eine PatientenID eingeben.</span>';
-          showPopup(
-            "PatientenID fehlt",
-            "Bitte eine PatientenID eingeben.",
-            "warning",
-          );
-          return;
-        }
-
-        const numericId = Number(pid);
-        if (!Number.isFinite(numericId)) {
-          message.innerHTML =
-            '<span class="error">Ungültige PatientenID.</span>';
-          showPopup(
-            "Ungültige PatientenID",
-            "Bitte eine gültige Zahl eingeben.",
-            "warning",
-          );
-          return;
-        }
-        pid = String(numericId);
-
-        message.textContent = "Diagramm wird geladen...";
-        chart.style.display = "none";
-
-        try {
-          const res = await fetch(
-            `${API_URL}/plot/${encodeURIComponent(pid)}`,
-            { headers: authHeaders() },
-          );
-
-          if (res.status === 401) {
-            message.innerHTML = '<span class="error">Nicht angemeldet.</span>';
-            showPopup(
-              "Nicht angemeldet",
-              "Bitte einloggen, um das Diagramm zu laden.",
-              "warning",
-            );
-            return;
-          }
-          if (res.status === 404) {
-            message.innerHTML =
-              '<span class="error">Keine Daten für diese PatientenID gefunden.</span>';
-            showPopup(
-              "Keine Daten",
-              "Für diese PatientenID wurden keine Daten gefunden.",
-              "info",
-            );
-            return;
-          }
-          if (!res.ok) throw new Error("Fehler beim Laden des Diagramms.");
-
-          const html = await res.text();
-          const blob = new Blob([html], { type: "text/html" });
-          const url = URL.createObjectURL(blob);
-
-          chart.src = url;
-          chart.style.display = "block";
-
-          message.innerHTML = `<span class="success">Diagramm für PatientenID ${pid}</span>`;
-        } catch (err) {
-          console.error(err);
-          message.innerHTML = `<span class="error">${err.message}</span>`;
-          showPopup("Fehler beim Diagramm", err.message, "error");
-        }
-      }
-
-      // ============================================================
-      //  FULLSCREEN
-      // ============================================================
-      async function toggleChartFullscreen() {
-        const container = document.getElementById("chart-container");
-
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          if (document.exitFullscreen) await document.exitFullscreen();
-          else if (document.webkitExitFullscreen)
-            await document.webkitExitFullscreen();
-          return;
-        }
-
-        try {
-          if (container.requestFullscreen) await container.requestFullscreen();
-          else if (container.webkitRequestFullscreen)
-            await container.webkitRequestFullscreen();
-        } catch (e) {
-          console.error("Fullscreen Fehler:", e);
-          showPopup(
-            "Vollbild nicht möglich",
-            "Der Browser konnte den Vollbildmodus nicht starten.",
-            "error",
-          );
-        }
-      }
     </script>
   </body>
 </html>

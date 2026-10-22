@@ -404,6 +404,114 @@
           border-color: rgba(0, 0, 0, 0.07);
         }
       }
+
+      /* ============================================================
+         BEFUNDTEXT – eine Box mit Absätzen (Design wie Dialyse NU)
+         ============================================================ */
+      .out-card {
+        position: relative;
+        z-index: 1;
+        box-sizing: content-box;
+        background: rgba(255, 255, 255, 0.9);
+        max-width: 715px;
+        margin: 24px auto 0;
+        padding: 28px;
+        border-radius: 20px;
+        box-shadow:
+          0 3px 6px rgba(0, 0, 0, 0.05),
+          0 12px 20px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .outrow {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+      }
+
+      #out {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 13px;
+        font:
+          13px/1.55 ui-monospace,
+          Menlo,
+          monospace;
+        color: #1d2330;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      /* Kopier-Button: Kopier-Symbol -> Haken */
+      #outCopy {
+        position: relative;
+        flex: none;
+      }
+
+      #outCopy svg {
+        position: absolute;
+        transition:
+          transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1),
+          opacity 0.25s;
+      }
+
+      #outCopy .ic-check {
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 24;
+        stroke-dashoffset: 24;
+        opacity: 0;
+        transform: scale(0.4) rotate(-30deg);
+      }
+
+      html body #outCopy.done {
+        background: #1c8a3a !important;
+      }
+
+      #outCopy.done .ic-copy {
+        opacity: 0;
+        transform: scale(0.3) rotate(90deg);
+      }
+
+      #outCopy.done .ic-check {
+        opacity: 1;
+        transform: none;
+        stroke-dashoffset: 0;
+        transition:
+          stroke-dashoffset 0.4s ease 0.15s,
+          transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1) 0.1s,
+          opacity 0.2s;
+      }
+
+      @media (max-width: 900px) {
+        .out-card {
+          margin: 20px 20px 0;
+        }
+      }
+
+      @media (max-width: 650px) {
+        .out-card {
+          margin: 16px 12px 0;
+          padding: 18px 14px;
+          border-radius: 18px;
+        }
+
+        .outrow {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        #outCopy {
+          align-self: flex-end;
+        }
+      }
     </style>
   </head>
 
@@ -412,20 +520,6 @@
          HEADER
          ================================ -->
     <div class="header">
-      <a href="../site2.html" id="site2Btn" class="BTN" title="Auswertung">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24px"
-          viewBox="0 -960 960 960"
-          width="24px"
-          fill="FFFFFF"
-        >
-          <path
-            d="M280-160 80-360l200-200 56 57-103 103h287v80H233l103 103-56 57Zm400-240-56-57 103-103H440v-80h287L624-743l56-57 200 200-200 200Z"
-          />
-        </svg>
-      </a>
-
       <h1>Lipids</h1>
 
       <button type="button" id="resetBtn" class="BTN" title="Zurücksetzen">
@@ -619,6 +713,44 @@
 
       </div>
     </form>
+
+    <!-- ================================
+         BEFUNDTEXT (eine Box, Absätze)
+         ================================ -->
+    <div class="out-card">
+      <div class="outrow">
+        <pre id="out"></pre>
+        <button
+          type="button"
+          id="outCopy"
+          class="BTN"
+          title="Text kopieren"
+          aria-label="Text kopieren"
+        >
+          <svg
+            class="ic-copy"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            width="24"
+            viewBox="0 0 24 24"
+            fill="black"
+          >
+            <path
+              d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"
+            />
+          </svg>
+          <svg
+            class="ic-check"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24"
+            width="24"
+            viewBox="0 0 24 24"
+          >
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </button>
+      </div>
+    </div>
 
     <button type="button" id="Save_BTN" class="BTN" title="Speichern">
       <svg
@@ -844,6 +976,7 @@
           return;
         }
         Object.values(found).forEach((o) => labSet(o.key, o.val));
+        renderBefund();
 
         const fehlt = LAB_FIELDS.filter((f) => !(f.id in found)).map(
           (f) => f.name,
@@ -901,6 +1034,105 @@
           if (t.split(/[\t\n\r]+/).length < 3) return;
           ev.preventDefault();
           labLoad(t);
+        });
+      }
+
+      // ============================================================
+      //  BEFUNDTEXT (aus den Laborwerten im localStorage)
+      // ============================================================
+      function buildBefund() {
+        const Gesamtcholesterin = parseFloat(localStorage.getItem("9Input"));
+        const Triglyceride = parseFloat(localStorage.getItem("3Input"));
+        const HDL_C = parseFloat(localStorage.getItem("7Input"));
+        const ApoB = parseFloat(localStorage.getItem("13Input"));
+        const NON_HDL = Gesamtcholesterin - HDL_C;
+
+        let text =
+          "Der Patient stellte sich zur Beurteilung einer Fettstoffwechselstörung vor.";
+
+        if (!isNaN(Triglyceride) && Triglyceride >= 300) {
+          text +=
+            "\n\nBei einer Hypertriglyceridämie besteht das Risiko einer potentiell lebensbedrohlichen Pankreatitis. " +
+            "Diese Erkrankung trat bisher nicht auf. Das Risiko ist ab Triglycerid-Werten von > 1000 mg/dl deutlich erhöht. " +
+            "Die hier nüchtern erhobenen Werte lagen bei " +
+            Triglyceride +
+            " mg/dl. " +
+            "Das kardiovaskuläre Risiko ist bei Hypertriglyceridämie allenfalls gering erhöht. " +
+            "Ein Anhalt für eine sekundäre Genese habe ich nicht." +
+            "\n\nDie Therapie besteht in erster Linie aus einer Ernährungsberatung. " +
+            "Diese ist bei uns erfolgt, ein Merkblatt wurde ausgehändigt. " +
+            "Im Vordergrund steht die Reduktion von schnellen Kohlehydraten und nicht der Fette, die Reduktion des Alkoholkonsums und ein maßvoller Umgang mit Fleisch. " +
+            "Über eine gesunde Lebensweise mit körperlicher Aktivität sowie Gewichtsreduktion wurde ebenfalls gesprochen.";
+        }
+
+        if (
+          Triglyceride >= 150 &&
+          NON_HDL / ApoB >= 1.7 &&
+          Triglyceride / ApoB >= 1.35
+        ) {
+          text +=
+            "\n\nEs könnte eine familiäre Dysbetalipoproteinämie vorliegen.\n" +
+            "Folgende Befunde liegen vor:\n" +
+            "Triglyceride = " +
+            Triglyceride +
+            " mg/dl UND\n" +
+            "NON-HDL/ApoB-Quotient = " +
+            (NON_HDL / ApoB).toFixed(2) +
+            " mg/dl\n" +
+            "TG/ApoB-Quotient = " +
+            (Triglyceride / ApoB).toFixed(2) +
+            " mg/dl" +
+            "\n\nDie familiäre Dysbetalipoproteinämie (Typ III-Hyperlipidämie nach Fredrickson, autosomal-rezessiv, Häufigkeit ca. 1:2.000) geht auf eine Störung des Metabolismus von Chylomikronen und VLDL-Remnants zurück, deren Aufnahme in die Leber durch Apolipoprotein E (Apo E) vermittelt wird." +
+            "\n\nRemnants sind Abbauprodukte des plasmatischen Lipoprotein-Stoffwechsels und gehören zu den atherogensten Lipidpartikeln. Die betroffenen Patienten haben daher ein sehr hohes Gefäßrisiko (arterielle Verschlusskrankheit, KHK, Schlaganfall)." +
+            "\n\nHäufig finden sich kutane oder tuberöse Xanthome, pathognomisch sind Handlinien-Xanthome." +
+            "\n\nEs wird eine genetische Apolipoprotein E-Typisierung empfohlen.";
+        }
+
+        return text;
+      }
+
+      function renderBefund() {
+        const out = document.getElementById("out");
+        if (out) out.textContent = buildBefund();
+      }
+
+      async function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "0";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (!ok) throw new Error("Kopieren fehlgeschlagen");
+      }
+
+      function initBefundCopy() {
+        const btn = document.getElementById("outCopy");
+        if (!btn) return;
+        btn.addEventListener("click", async () => {
+          try {
+            await copyText(document.getElementById("out").textContent);
+            btn.classList.add("done");
+            clearTimeout(btn._t);
+            btn._t = setTimeout(() => btn.classList.remove("done"), 2000);
+          } catch (err) {
+            console.error("Fehler beim Kopieren:", err);
+            showPopup(
+              "Kopieren fehlgeschlagen",
+              "Der Text konnte nicht kopiert werden.",
+              "error",
+            );
+          }
         });
       }
 
@@ -1049,6 +1281,7 @@
 
         updateBMI();
         updateAlter();
+        renderBefund();
       }
 
       // ============================================================
@@ -1126,6 +1359,10 @@
 
         // Labortabelle (Drag & Drop)
         initLabDrop();
+
+        // Befundtext unten
+        renderBefund();
+        initBefundCopy();
 
         // Reset
         document
