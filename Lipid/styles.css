@@ -586,13 +586,11 @@ form {
   color: #000000;
 }
 
-/* ============================================================
-   UMSCHALTER (Toggle)
-   ============================================================ */
 .umschalter {
   position: absolute;
   top: 50%;
-  right: 60%;
+  left: 0;                 /* ← ganz links */
+  right: auto;             /* ← wichtig, sonst überschreibt right den Wert */
   transform: translateY(-50%);
   width: 3.2em;
   height: 1.8em;
