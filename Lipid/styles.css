@@ -598,7 +598,6 @@ form {
   height: 1.8em;
   z-index: 5;
 }
-
 .umschalter input {
   appearance: none;
   width: 100%;
@@ -806,7 +805,7 @@ form {
   .umschalter {
     top: 50%;
     right: auto;
-    left: 58px;
+    left: 0px;
     transform: translateY(-50%);
     width: 2.8em;
     height: 1.5em;
