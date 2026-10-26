@@ -133,9 +133,9 @@
       .toFixed(d === undefined ? 1 : d)
       .replace(".", ",");
   const LEVEL = {
-    low: "niedriges bis moderates Risiko",
-    high: "hohes Risiko",
-    vhigh: "sehr hohes Risiko",
+    low: "niedrigen bis moderaten Risiko",
+    high: "hohen Risiko",
+    vhigh: "sehr hohen Risiko",
   };
 
   if (typeof module !== "undefined" && module.exports)
@@ -299,8 +299,7 @@
       if (s.ok) {
         chip.hidden = false;
         chip.dataset.level = s.level;
-        chip.textContent =
-          s.model + " · " + de(s.shown) + " % · " + LEVEL[s.level];
+        chip.textContent = s.model + " · " + de(s.shown) + " %";
       } else if (s.reason) {
         chip.hidden = false;
         chip.dataset.level = "info";
