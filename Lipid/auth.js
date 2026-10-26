@@ -40,7 +40,8 @@ async function confirmPopup(title, text, confirmText = "Ja, löschen") {
 
 // ================== API ==================
 //const API_URL = "https://lipidapi.de.deplexo.com";
-const API_URL = "https://jetouss-api.onrender.com"
+const API_URL = "https://jetouss-api.onrender.com";
+
 // ================== Base Path ==================
 function getBasePath() {
   return window.location.pathname.includes("/Risiko/") ? "../" : "";
@@ -135,7 +136,6 @@ function requireSession() {
   return true;
 }
 
-// Session gegen Server prüfen
 async function checkSession() {
   const token = getToken();
   if (!token) return false;
@@ -146,3 +146,146 @@ async function checkSession() {
     return false;
   }
 }
+
+// ================== KEEP-ALIVE (Backend wach halten) ==================
+(function keepAlive() {
+  const PING_INTERVAL = 10 * 60 * 1000;
+
+  function ping() {
+    fetch(`${API_URL}/me`, {
+      method: "GET",
+      headers: authHeaders(),
+      cache: "no-store",
+    }).catch(() => {});
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ping, { once: true });
+  } else {
+    ping();
+  }
+
+  setInterval(() => {
+    if (!document.hidden) ping();
+  }, PING_INTERVAL);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) ping();
+  });
+})();
+
+// ================== Backend-Wächter ==================
+// Blockiert Page-Logik, solange das Backend nicht antwortet.
+// Andere Seiten awaiten `window.__backendReady` bevor sie starten.
+
+const BACKEND_PING_TIMEOUT = 5000;
+const BACKEND_RETRY_DELAY = 3000;
+const BACKEND_GIVE_UP_MS = 120000;
+
+function isLoginPage() {
+  return /login\.html$/i.test(location.pathname);
+}
+
+function backendSleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function pingBackendOnce(timeoutMs = BACKEND_PING_TIMEOUT) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    await fetch(`${API_URL}/me`, {
+      method: "GET",
+      headers: authHeaders(),
+      cache: "no-store",
+      signal: ctrl.signal,
+    });
+    // Jede Antwort (auch 401/500) → Backend erreichbar
+    return true;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function showStartupPopup() {
+  if (typeof Swal === "undefined") return;
+  Swal.fire({
+    title: "Backend fährt hoch",
+    html:
+      "Der Server startet gerade.<br>" +
+      "Sobald er antwortet, geht es automatisch weiter.<br><br>" +
+      "<b>Bitte warten…</b>",
+    icon: "info",
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    showConfirmButton: false,
+    didOpen: () => Swal.showLoading(),
+  });
+}
+
+function closeBackendPopup() {
+  if (typeof Swal !== "undefined") Swal.close();
+}
+
+// Initialer Guard: blockiert die Seite bis Backend da ist.
+// Erfolg → reload (frischer State).
+// 2 Min ohne Antwort → login.html.
+window.__backendReady = (async () => {
+  if (isLoginPage()) return true;
+  if (await pingBackendOnce()) return true;
+
+  showStartupPopup();
+
+  const start = Date.now();
+  while (Date.now() - start < BACKEND_GIVE_UP_MS) {
+    await backendSleep(BACKEND_RETRY_DELAY);
+    if (await pingBackendOnce()) {
+      closeBackendPopup();
+      location.reload();
+      return new Promise(() => {});
+    }
+  }
+
+  closeBackendPopup();
+  window.location.href = getBasePath() + "login.html";
+  return new Promise(() => {});
+})();
+
+// Wiedereinstieg nach langer Tab-Pause: Backend checken,
+// bei Ausfall Popup (Seite bleibt stehen, kein Reload).
+let hiddenAt = 0;
+document.addEventListener("visibilitychange", async () => {
+  if (isLoginPage()) return;
+
+  if (document.hidden) {
+    hiddenAt = Date.now();
+    return;
+  }
+
+  if (!hiddenAt || Date.now() - hiddenAt < BACKEND_GIVE_UP_MS) {
+    hiddenAt = 0;
+    return;
+  }
+  hiddenAt = 0;
+
+  if (await pingBackendOnce()) return;
+
+  showStartupPopup();
+  const start = Date.now();
+  while (Date.now() - start < BACKEND_GIVE_UP_MS) {
+    await backendSleep(BACKEND_RETRY_DELAY);
+    if (await pingBackendOnce()) {
+      closeBackendPopup();
+      return;
+    }
+  }
+  closeBackendPopup();
+  showPopup(
+    "Backend nicht erreichbar",
+    "Der Server antwortet nicht. Bitte laden Sie die Seite neu.",
+    "error",
+  );
+});

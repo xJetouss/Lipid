@@ -1,1467 +1,1524 @@
 <!doctype html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Lipids</title>
+        <title>Lipids</title>
 
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="../apple-touch-icon.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="../favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="../favicon-16x16.png"
-    />
-    <link rel="manifest" href="../site.webmanifest" />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="../apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="../favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="../favicon-16x16.png"
+        />
+        <link rel="manifest" href="../site.webmanifest" />
 
-    <link rel="stylesheet" href="../styles.css" />
+        <link rel="stylesheet" href="../styles.css" />
 
-    <style>
-      section + section {
-        margin-top: 50px;
-      }
+        <style>
+            section + section {
+                margin-top: 50px;
+            }
 
-      html,
-      body {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-      }
+            html,
+            body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
 
-      .page {
-        display: contents;
-      }
+            .page {
+                display: contents;
+            }
 
-      .page + .page {
-        margin-top: 0;
-      }
+            .page + .page {
+                margin-top: 0;
+            }
 
-      .eingabefeld {
-        width: 85%;
-      }
+            .eingabefeld {
+                width: 85%;
+            }
 
-      /* ============================================================
+            /* ============================================================
          LABORTABELLE – Drag & Drop (aus Dialyse NU übernommen)
          ============================================================ */
-      .lab-card {
-        position: relative;
-        z-index: 1;
-        /* gleiche Box-Logik wie <form> (content-box), damit beide exakt
-           gleich breit sind */
-        background: rgba(255, 255, 255, 0.9);
-        max-width: 715px;
-        margin: 0 auto 24px;
-        padding: 20px 28px;
-        border-radius: 20px;
-        box-shadow:
-          0 3px 6px rgba(0, 0, 0, 0.05),
-          0 12px 20px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-      }
+            .lab-card {
+                position: relative;
+                z-index: 1;
+                background: rgba(255, 255, 255, 0.9);
+                max-width: 715px;
+                margin: 0 auto 24px;
+                padding: 20px 28px;
+                border-radius: 20px;
+                box-shadow:
+                    0 3px 6px rgba(0, 0, 0, 0.05),
+                    0 12px 20px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
+            }
 
-      .lab-drop {
-        padding: 26px 16px;
-        text-align: center;
-        background: rgba(255, 255, 255, 0.65);
-        border: 2px dashed #7fb4e6;
-        border-radius: 16px;
-        cursor: pointer;
-        outline: none;
-        transition:
-          background 0.2s,
-          border-color 0.2s;
-      }
+            .lab-drop {
+                padding: 26px 16px;
+                text-align: center;
+                background: rgba(255, 255, 255, 0.65);
+                border: 2px dashed #7fb4e6;
+                border-radius: 16px;
+                cursor: pointer;
+                outline: none;
+                transition:
+                    background 0.2s,
+                    border-color 0.2s;
+            }
 
-      .lab-drop:hover,
-      .lab-drop.over,
-      .lab-drop:focus {
-        background: rgba(0, 119, 204, 0.08);
-        border-color: #0077cc;
-      }
+            .lab-drop:hover,
+            .lab-drop.over,
+            .lab-drop:focus {
+                background: rgba(0, 119, 204, 0.08);
+                border-color: #0077cc;
+            }
 
-      .lab-drop b {
-        font-size: 1.15rem;
-      }
+            .lab-drop b {
+                font-size: 1.15rem;
+            }
 
-      .lab-drop p {
-        margin: 6px 0 0;
-        font-size: 0.95rem;
-        opacity: 0.65;
-      }
+            .lab-drop p {
+                margin: 6px 0 0;
+                font-size: 0.95rem;
+                opacity: 0.65;
+            }
 
-      .lab-pill {
-        margin-top: 14px;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #0077cc, #00a2ff);
-        color: #fff;
-        font-size: 1rem;
-        cursor: pointer;
-      }
+            .lab-pill {
+                margin-top: 14px;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 999px;
+                background: linear-gradient(135deg, #0077cc, #00a2ff);
+                color: #fff;
+                font-size: 1rem;
+                cursor: pointer;
+            }
 
-      #labMsg {
-        min-height: 1.2em;
-        margin-top: 10px;
-        font-size: 0.95rem;
-      }
+            #labMsg {
+                min-height: 1.2em;
+                margin-top: 10px;
+                font-size: 0.95rem;
+            }
 
-      #labMsg.ok {
-        color: #1c8a3a;
-        font-weight: bold;
-      }
+            #labMsg.ok {
+                color: #1c8a3a;
+                font-weight: bold;
+            }
 
-      @media (max-width: 900px) {
-        .lab-card {
-          margin: 20px 20px 0;
-        }
-      }
+            @media (max-width: 900px) {
+                .lab-card {
+                    margin: 20px 20px 0;
+                }
+            }
 
-      @media (max-width: 650px) {
-        .lab-card {
-          margin: 12px 12px 0;
-          padding: 16px 14px;
-          border-radius: 18px;
-        }
-      }
+            @media (max-width: 650px) {
+                .lab-card {
+                    margin: 12px 12px 0;
+                    padding: 16px 14px;
+                    border-radius: 18px;
+                }
+            }
 
-      /* ============================================================
+            /* ============================================================
          PATIENTENDATEN – Design
          ============================================================ */
-      .patient-heading {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin: 0 0 24px 0;
-        font-size: 1.35rem;
-        font-weight: 600;
-        letter-spacing: 0.3px;
-        color: #005fa3;
-        padding-bottom: 12px;
-        border-bottom: 1px solid rgba(0, 95, 163, 0.12);
-      }
+            .patient-heading {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin: 0 0 24px 0;
+                font-size: 1.35rem;
+                font-weight: 600;
+                letter-spacing: 0.3px;
+                color: #005fa3;
+                padding-bottom: 12px;
+                border-bottom: 1px solid rgba(0, 95, 163, 0.12);
+            }
 
-      .patient-heading svg {
-        flex-shrink: 0;
-        opacity: 0.9;
-      }
+            .patient-heading svg {
+                flex-shrink: 0;
+                opacity: 0.9;
+            }
 
-      .patient-grid {
-        --feld-h: 44px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        grid-auto-rows: 1fr;
-        column-gap: 24px;
-        row-gap: 18px;
-        width: 100%;
-      }
+            .patient-grid {
+                --feld-h: 44px;
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-auto-rows: 1fr;
+                column-gap: 24px;
+                row-gap: 18px;
+                width: 100%;
+            }
 
-      .patient-grid .eingabefeld {
-        width: auto;
-        height: 100%;
-        box-sizing: border-box;
-        justify-content: space-between;
-        padding: 10px 14px 6px;
-        background: rgba(255, 255, 255, 0.75);
-        border: 1px solid rgba(0, 0, 0, 0.07);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-        min-width: 0;
-      }
+            .patient-grid .eingabefeld {
+                width: auto;
+                height: 100%;
+                box-sizing: border-box;
+                justify-content: space-between;
+                padding: 10px 14px 6px;
+                background: rgba(255, 255, 255, 0.75);
+                border: 1px solid rgba(0, 0, 0, 0.07);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+                min-width: 0;
+            }
 
-      .patient-grid .eingabefeld:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 95, 163, 0.1);
-        border-color: rgba(0, 119, 204, 0.25);
-      }
+            .patient-grid .eingabefeld:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0, 95, 163, 0.1);
+                border-color: rgba(0, 119, 204, 0.25);
+            }
 
-      .patient-grid .eingabefeld:focus-within {
-        border-color: #0077cc;
-        box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.12);
-        transform: translateY(-1px);
-      }
+            .patient-grid .eingabefeld:focus-within {
+                border-color: #0077cc;
+                box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.12);
+                transform: translateY(-1px);
+            }
 
-      .patient-grid .einheit-label {
-        opacity: 0.75;
-        font-size: 0.78rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.3px;
-        margin: 0 0 2px;
-        text-align: left;
-        color: #4a5a6a;
-        line-height: 1.3;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
+            .patient-grid .einheit-label {
+                opacity: 0.75;
+                font-size: 0.78rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                margin: 0 0 2px;
+                text-align: left;
+                color: #4a5a6a;
+                line-height: 1.3;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
 
-      /* Alle Eingaben (Text, Zahl, Datum, Monat, Auswahl) exakt gleich groß.
-         appearance: none verhindert, dass iOS/Safari Datumsfelder
-         eigenständig skaliert, zentriert oder zusammenfallen lässt. */
-      .patient-grid .eingabefeld input,
-      .patient-grid .eingabefeld select {
-        -webkit-appearance: none;
-        appearance: none;
-        display: block;
-        box-sizing: border-box;
-        width: 100%;
-        min-width: 0;
-        max-width: 100%;
-        height: var(--feld-h);
-        min-height: var(--feld-h);
-        margin: 0;
-        padding: 0 2px;
-        border: none;
-        border-bottom: 1px solid #ccc;
-        border-radius: 0;
-        background-color: transparent;
-        font-family: inherit;
-        font-size: 1rem;
-        line-height: 1.2;
-        color: #1a1a1a;
-        text-align: left;
-        outline: none;
-        transition:
-          border-color 0.2s ease,
-          background 0.2s ease;
-      }
+            .patient-grid .eingabefeld input,
+            .patient-grid .eingabefeld select {
+                -webkit-appearance: none;
+                appearance: none;
+                display: block;
+                box-sizing: border-box;
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;
+                height: var(--feld-h);
+                min-height: var(--feld-h);
+                margin: 0;
+                padding: 0 2px;
+                border: none;
+                border-bottom: 1px solid #ccc;
+                border-radius: 0;
+                background-color: transparent;
+                font-family: inherit;
+                font-size: 1rem;
+                line-height: 1.2;
+                color: #1a1a1a;
+                text-align: left;
+                outline: none;
+                transition:
+                    border-color 0.2s ease,
+                    background 0.2s ease;
+            }
 
-      .patient-grid .eingabefeld input:focus,
-      .patient-grid .eingabefeld select:focus {
-        outline: none;
-        border-bottom-color: #0077cc;
-        border-bottom-width: 2px;
-      }
+            .patient-grid .eingabefeld input:focus,
+            .patient-grid .eingabefeld select:focus {
+                outline: none;
+                border-bottom-color: #0077cc;
+                border-bottom-width: 2px;
+            }
 
-      .patient-grid .eingabefeld input::placeholder {
-        color: #b0b8c2;
-        font-weight: 400;
-      }
+            .patient-grid .eingabefeld input::placeholder {
+                color: #b0b8c2;
+                font-weight: 400;
+            }
 
-      .patient-grid
-        .eingabefeld
-        input[type="number"]::-webkit-inner-spin-button,
-      .patient-grid
-        .eingabefeld
-        input[type="number"]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
+            .patient-grid
+                .eingabefeld
+                input[type="number"]::-webkit-inner-spin-button,
+            .patient-grid
+                .eingabefeld
+                input[type="number"]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
 
-      .patient-grid .eingabefeld input[type="number"] {
-        -moz-appearance: textfield;
-        appearance: textfield;
-      }
+            .patient-grid .eingabefeld input[type="number"] {
+                -moz-appearance: textfield;
+                appearance: textfield;
+            }
 
-      .patient-grid .eingabefeld input[type="date"],
-      .patient-grid .eingabefeld input[type="month"] {
-        font-size: 1rem;
-        cursor: pointer;
-        color: #1a1a1a;
-        text-align: left;
-        -webkit-text-fill-color: currentColor;
-      }
+            .patient-grid .eingabefeld input[type="date"],
+            .patient-grid .eingabefeld input[type="month"] {
+                font-size: 1rem;
+                cursor: pointer;
+                color: #1a1a1a;
+                text-align: left;
+                -webkit-text-fill-color: currentColor;
+            }
 
-      /* iOS/Safari + Chrome: Innenleben der Datumsfelder neutralisieren,
-         damit leere Felder nicht kleiner sind als die anderen */
-      .patient-grid .eingabefeld input::-webkit-date-and-time-value {
-        text-align: left;
-        margin: 0;
-        padding: 0;
-        min-height: 1.2em;
-      }
+            .patient-grid .eingabefeld input::-webkit-date-and-time-value {
+                text-align: left;
+                margin: 0;
+                padding: 0;
+                min-height: 1.2em;
+            }
 
-      .patient-grid .eingabefeld input::-webkit-datetime-edit,
-      .patient-grid .eingabefeld input::-webkit-datetime-edit-fields-wrapper {
-        padding: 0;
-      }
+            .patient-grid .eingabefeld input::-webkit-datetime-edit,
+            .patient-grid
+                .eingabefeld
+                input::-webkit-datetime-edit-fields-wrapper {
+                padding: 0;
+            }
 
-      .patient-grid
-        .eingabefeld
-        input[type="date"]::-webkit-calendar-picker-indicator,
-      .patient-grid
-        .eingabefeld
-        input[type="month"]::-webkit-calendar-picker-indicator {
-        cursor: pointer;
-        opacity: 0.55;
-        margin: 0;
-        padding: 0;
-        transition: opacity 0.2s ease;
-      }
+            .patient-grid
+                .eingabefeld
+                input[type="date"]::-webkit-calendar-picker-indicator,
+            .patient-grid
+                .eingabefeld
+                input[type="month"]::-webkit-calendar-picker-indicator {
+                cursor: pointer;
+                opacity: 0.55;
+                margin: 0;
+                padding: 0;
+                transition: opacity 0.2s ease;
+            }
 
-      .patient-grid
-        .eingabefeld
-        input[type="date"]::-webkit-calendar-picker-indicator:hover,
-      .patient-grid
-        .eingabefeld
-        input[type="month"]::-webkit-calendar-picker-indicator:hover {
-        opacity: 1;
-      }
+            .patient-grid
+                .eingabefeld
+                input[type="date"]::-webkit-calendar-picker-indicator:hover,
+            .patient-grid
+                .eingabefeld
+                input[type="month"]::-webkit-calendar-picker-indicator:hover {
+                opacity: 1;
+            }
 
-      .patient-grid .eingabefeld select {
-        appearance: none;
-        -webkit-appearance: none;
-        cursor: pointer;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23005fa3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 2px center;
-        background-size: 14px;
-        padding-right: 24px;
-        text-overflow: ellipsis;
-      }
+            .patient-grid .eingabefeld select {
+                appearance: none;
+                -webkit-appearance: none;
+                cursor: pointer;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23005fa3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 2px center;
+                background-size: 14px;
+                padding-right: 24px;
+                text-overflow: ellipsis;
+            }
 
-      /* Nicht editierbare Felder (BMI, Alter) – grau */
-      .patient-grid .eingabefeld.gray-input {
-        background: rgba(200, 200, 200, 0.4);
-        border-color: rgba(0, 0, 0, 0.07);
-        cursor: default;
-      }
+            .patient-grid .eingabefeld.gray-input {
+                background: rgba(200, 200, 200, 0.4);
+                border-color: rgba(0, 0, 0, 0.07);
+                cursor: default;
+            }
 
-      .patient-grid .eingabefeld.gray-input:hover,
-      .patient-grid .eingabefeld.gray-input:focus-within {
-        transform: none;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-        border-color: rgba(0, 0, 0, 0.07);
-      }
+            .patient-grid .eingabefeld.gray-input:hover,
+            .patient-grid .eingabefeld.gray-input:focus-within {
+                transform: none;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+                border-color: rgba(0, 0, 0, 0.07);
+            }
 
-      .patient-grid .eingabefeld.gray-input .einheit-label {
-        color: #7a828c;
-      }
+            .patient-grid .eingabefeld.gray-input .einheit-label {
+                color: #7a828c;
+            }
 
-      .patient-grid .eingabefeld input[readonly] {
-        cursor: default;
-        color: #6b727c;
-        font-weight: 500;
-        border-bottom-color: rgba(0, 0, 0, 0.15);
-      }
+            .patient-grid .eingabefeld input[readonly] {
+                cursor: default;
+                color: #6b727c;
+                font-weight: 500;
+                border-bottom-color: rgba(0, 0, 0, 0.15);
+            }
 
-      .patient-grid .eingabefeld input[readonly]:focus {
-        border-bottom-width: 1px;
-        border-bottom-color: rgba(0, 0, 0, 0.15);
-      }
+            .patient-grid .eingabefeld input[readonly]:focus {
+                border-bottom-width: 1px;
+                border-bottom-color: rgba(0, 0, 0, 0.15);
+            }
 
-      @media (max-width: 1100px) {
-        .patient-grid {
-          column-gap: 24px;
-        }
-      }
+            @media (max-width: 1100px) {
+                .patient-grid {
+                    column-gap: 24px;
+                }
+            }
 
-      @media (max-width: 900px) {
-        .patient-grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          column-gap: 32px;
-          row-gap: 20px;
-        }
-      }
+            @media (max-width: 900px) {
+                .patient-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    column-gap: 32px;
+                    row-gap: 20px;
+                }
+            }
 
-      @media (max-width: 650px) {
-        .patient-heading {
-          font-size: 1.15rem;
-          margin-bottom: 18px;
-        }
+            @media (max-width: 650px) {
+                .patient-heading {
+                    font-size: 1.15rem;
+                    margin-bottom: 18px;
+                }
 
-        .patient-grid {
-          --feld-h: 48px;
-          grid-template-columns: 1fr;
-          grid-auto-rows: auto;
-          column-gap: 0;
-          row-gap: 12px;
-        }
+                .patient-grid {
+                    --feld-h: 48px;
+                    grid-template-columns: 1fr;
+                    grid-auto-rows: auto;
+                    column-gap: 0;
+                    row-gap: 12px;
+                }
 
-        .patient-grid .eingabefeld {
-          padding: 10px 14px 6px;
-          border-radius: 14px;
-        }
+                .patient-grid .eingabefeld {
+                    padding: 10px 14px 6px;
+                    border-radius: 14px;
+                }
 
-        /* mind. 16px, sonst zoomt iOS beim Antippen in das Feld */
-        .patient-grid .eingabefeld input,
-        .patient-grid .eingabefeld select {
-          font-size: 1.1rem;
-          height: var(--feld-h);
-          min-height: var(--feld-h);
-        }
+                .patient-grid .eingabefeld input,
+                .patient-grid .eingabefeld select {
+                    font-size: 1.1rem;
+                    height: var(--feld-h);
+                    min-height: var(--feld-h);
+                }
 
-        .patient-grid .einheit-label {
-          font-size: 0.78rem;
-        }
-      }
+                .patient-grid .einheit-label {
+                    font-size: 0.78rem;
+                }
+            }
 
-      @media (hover: none) {
-        .patient-grid .eingabefeld:hover {
-          transform: none;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-          border-color: rgba(0, 0, 0, 0.07);
-        }
-      }
+            @media (hover: none) {
+                .patient-grid .eingabefeld:hover {
+                    transform: none;
+                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+                    border-color: rgba(0, 0, 0, 0.07);
+                }
+            }
 
-      /* ============================================================
-         BEFUNDTEXT – eine Box mit Absätzen (Design wie Dialyse NU)
+            /* ============================================================
+         BEFUNDTEXT – eine Box mit Absätzen
          ============================================================ */
-      .out-card {
-        position: relative;
-        z-index: 1;
-        box-sizing: content-box;
-        background: rgba(255, 255, 255, 0.9);
-        max-width: 715px;
-        margin: 24px auto 0;
-        padding: 28px;
-        border-radius: 20px;
-        box-shadow:
-          0 3px 6px rgba(0, 0, 0, 0.05),
-          0 12px 20px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(10px);
-      }
+            .out-card {
+                position: relative;
+                z-index: 1;
+                box-sizing: content-box;
+                background: rgba(255, 255, 255, 0.9);
+                max-width: 715px;
+                margin: 24px auto 0;
+                padding: 28px;
+                border-radius: 20px;
+                box-shadow:
+                    0 3px 6px rgba(0, 0, 0, 0.05),
+                    0 12px 20px rgba(0, 0, 0, 0.1);
+                backdrop-filter: blur(10px);
+            }
 
-      .outrow {
-        display: flex;
-        gap: 14px;
-        align-items: flex-start;
-      }
+            .outrow {
+                display: flex;
+                gap: 14px;
+                align-items: flex-start;
+            }
 
-      #out {
-        flex: 1;
-        min-width: 0;
-        margin: 0;
-        padding: 14px;
-        background: rgba(255, 255, 255, 0.65);
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 13px;
-        font:
-          13px/1.55 ui-monospace,
-          Menlo,
-          monospace;
-        color: #1d2330;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
+            #out {
+                flex: 1;
+                min-width: 0;
+                margin: 0;
+                padding: 14px;
+                background: rgba(255, 255, 255, 0.65);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                border-radius: 13px;
+                font:
+                    13px/1.55 ui-monospace,
+                    Menlo,
+                    monospace;
+                color: #1d2330;
+                white-space: pre-wrap;
+                word-break: break-word;
+            }
 
-      /* Kopier-Button: Kopier-Symbol -> Haken */
-      #outCopy {
-        position: relative;
-        flex: none;
-      }
+            #outCopy {
+                position: relative;
+                flex: none;
+            }
 
-      #outCopy svg {
-        position: absolute;
-        transition:
-          transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1),
-          opacity 0.25s;
-      }
+            #outCopy svg {
+                position: absolute;
+                transition:
+                    transform 0.35s cubic-bezier(0.3, 1.4, 0.5, 1),
+                    opacity 0.25s;
+            }
 
-      #outCopy .ic-check {
-        fill: none;
-        stroke: #fff;
-        stroke-width: 2.6;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-dasharray: 24;
-        stroke-dashoffset: 24;
-        opacity: 0;
-        transform: scale(0.4) rotate(-30deg);
-      }
+            #outCopy .ic-check {
+                fill: none;
+                stroke: #fff;
+                stroke-width: 2.6;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-dasharray: 24;
+                stroke-dashoffset: 24;
+                opacity: 0;
+                transform: scale(0.4) rotate(-30deg);
+            }
 
-      html body #outCopy.done {
-        background: #1c8a3a !important;
-      }
+            html body #outCopy.done {
+                background: #1c8a3a !important;
+            }
 
-      #outCopy.done .ic-copy {
-        opacity: 0;
-        transform: scale(0.3) rotate(90deg);
-      }
+            #outCopy.done .ic-copy {
+                opacity: 0;
+                transform: scale(0.3) rotate(90deg);
+            }
 
-      #outCopy.done .ic-check {
-        opacity: 1;
-        transform: none;
-        stroke-dashoffset: 0;
-        transition:
-          stroke-dashoffset 0.4s ease 0.15s,
-          transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1) 0.1s,
-          opacity 0.2s;
-      }
+            #outCopy.done .ic-check {
+                opacity: 1;
+                transform: none;
+                stroke-dashoffset: 0;
+                transition:
+                    stroke-dashoffset 0.4s ease 0.15s,
+                    transform 0.4s cubic-bezier(0.3, 1.4, 0.5, 1) 0.1s,
+                    opacity 0.2s;
+            }
 
-      @media (max-width: 900px) {
-        .out-card {
-          margin: 20px 20px 0;
-        }
-      }
+            @media (max-width: 900px) {
+                .out-card {
+                    margin: 20px 20px 0;
+                }
+            }
 
-      @media (max-width: 650px) {
-        .out-card {
-          margin: 16px 12px 0;
-          padding: 18px 14px;
-          border-radius: 18px;
-        }
+            @media (max-width: 650px) {
+                .out-card {
+                    margin: 16px 12px 0;
+                    padding: 18px 14px;
+                    border-radius: 18px;
+                }
 
-        .outrow {
-          flex-direction: column;
-          align-items: stretch;
-        }
+                .outrow {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
 
-        #outCopy {
-          align-self: flex-end;
-        }
-      }
-    </style>
-  </head>
+                #outCopy {
+                    align-self: flex-end;
+                }
+            }
+        </style>
+    </head>
 
-  <body>
-    <!-- ================================
+    <body>
+        <!-- ================================
          HEADER
          ================================ -->
-    <div class="header">
-      <h1>Lipids</h1>
+        <div class="header">
+            <h1>Lipids</h1>
 
-      <button type="button" id="resetBtn" class="BTN" title="Zurücksetzen">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="24"
-          width="24"
-          viewBox="0 -960 960 960"
-          fill="black"
-        >
-          <path
-            d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
-          />
-        </svg>
-      </button>
-    </div>
+            <button
+                type="button"
+                id="resetBtn"
+                class="BTN"
+                title="Zurücksetzen"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24"
+                    width="24"
+                    viewBox="0 -960 960 960"
+                    fill="black"
+                >
+                    <path
+                        d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
+                    />
+                </svg>
+            </button>
+        </div>
 
-    <!-- ================================
+        <!-- ================================
          LABORTABELLE (Drag & Drop)
          ================================ -->
-    <div class="lab-card">
-      <div class="lab-drop" id="labDrop" tabindex="0">
-        <b>Labortabelle hier hineinziehen</b>
-        <p>oder Text markieren und hineinziehen, oder ⌘V / Strg+V drücken</p>
-        <button type="button" class="lab-pill" id="labClip">
-          Aus Zwischenablage einfügen
-        </button>
-        <div id="labMsg"></div>
-      </div>
-    </div>
+        <div class="lab-card">
+            <div class="lab-drop" id="labDrop" tabindex="0">
+                <b>Labortabelle hier hineinziehen</b>
+                <p>
+                    oder Text markieren und hineinziehen, oder ⌘V / Strg+V
+                    drücken
+                </p>
+                <button type="button" class="lab-pill" id="labClip">
+                    Aus Zwischenablage einfügen
+                </button>
+                <div id="labMsg"></div>
+            </div>
+        </div>
 
-    <!-- ================================
+        <!-- ================================
          FORMULAR
          ================================ -->
-    <form>
-      <h2 class="patient-heading">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="22"
-          width="22"
-          viewBox="0 -960 960 960"
-          fill="#005fa3"
-        >
-          <path
-            d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"
-          />
-        </svg>
-        Patientendaten
-      </h2>
+        <form>
+            <h2 class="patient-heading">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="22"
+                    width="22"
+                    viewBox="0 -960 960 960"
+                    fill="#005fa3"
+                >
+                    <path
+                        d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"
+                    />
+                </svg>
+                Patientendaten
+            </h2>
 
-      <div class="patient-grid">
-        <div class="eingabefeld">
-          <label class="einheit-label" for="datum">Datum</label>
-          <input type="date" id="datum" autocomplete="off" />
-        </div>
+            <div class="patient-grid">
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="datum">Datum</label>
+                    <input type="date" id="datum" autocomplete="off" />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="patientenId">Patienten-ID</label>
-          <input
-            type="text"
-            id="patientenId"
-            autocomplete="off"
-            placeholder="z. B. 1111"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="patientenId"
+                        >Patienten-ID</label
+                    >
+                    <input
+                        type="text"
+                        id="patientenId"
+                        autocomplete="off"
+                        placeholder="z. B. 1111"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="geburtsdatum"
-            >Geburtsdatum (MM/JJJJ)</label
-          >
-          <input
-            type="month"
-            id="geburtsdatum"
-            min="1900-01"
-            autocomplete="off"
-            placeholder="JJJJ-MM"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="geburtsdatum"
+                        >Geburtsdatum (MM/JJJJ)</label
+                    >
+                    <input
+                        type="month"
+                        id="geburtsdatum"
+                        min="1900-01"
+                        autocomplete="off"
+                        placeholder="JJJJ-MM"
+                    />
+                </div>
 
-        <div class="eingabefeld gray-input">
-          <label class="einheit-label" for="alter">Alter (Jahre)</label>
-          <input type="text" id="alter" readonly tabindex="-1" placeholder="–" />
-        </div>
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label" for="alter"
+                        >Alter (Jahre)</label
+                    >
+                    <input
+                        type="text"
+                        id="alter"
+                        readonly
+                        tabindex="-1"
+                        placeholder="–"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="groesse">Größe (m)</label>
-          <input
-            type="text"
-            id="groesse"
-            inputmode="decimal"
-            autocomplete="off"
-            placeholder="z. B. 1.8 oder 1,8"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="groesse">Größe (m)</label>
+                    <input
+                        type="text"
+                        id="groesse"
+                        inputmode="decimal"
+                        autocomplete="off"
+                        placeholder="z. B. 1.8 oder 1,8"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="gewicht">Gewicht (kg)</label>
-          <input
-            type="text"
-            id="gewicht"
-            inputmode="decimal"
-            autocomplete="off"
-            placeholder="z. B. 55 oder 55,5"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="gewicht"
+                        >Gewicht (kg)</label
+                    >
+                    <input
+                        type="text"
+                        id="gewicht"
+                        inputmode="decimal"
+                        autocomplete="off"
+                        placeholder="z. B. 55 oder 55,5"
+                    />
+                </div>
 
-        <div class="eingabefeld gray-input">
-          <label class="einheit-label" for="bmi">BMI (kg/m²)</label>
-          <input type="text" id="bmi" readonly tabindex="-1" placeholder="–" />
-        </div>
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label" for="bmi">BMI (kg/m²)</label>
+                    <input
+                        type="text"
+                        id="bmi"
+                        readonly
+                        tabindex="-1"
+                        placeholder="–"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="blutdruck">Blutdruck (mmHg)</label>
-          <input
-            type="text"
-            id="blutdruck"
-            inputmode="numeric"
-            autocomplete="off"
-            placeholder="120"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="blutdruck"
+                        >Blutdruck (mmHg)</label
+                    >
+                    <input
+                        type="text"
+                        id="blutdruck"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="120"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="geschlecht">Geschlecht</label>
-          <select id="geschlecht">
-            <option value="">– bitte wählen –</option>
-            <option value="m">männlich</option>
-            <option value="w">weiblich</option>
-            <option value="d">divers</option>
-          </select>
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="geschlecht"
+                        >Geschlecht</label
+                    >
+                    <select id="geschlecht">
+                        <option value="">– bitte wählen –</option>
+                        <option value="m">männlich</option>
+                        <option value="w">weiblich</option>
+                        <option value="d">divers</option>
+                    </select>
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="zigaretten">Zigaretten / Tag</label>
-          <input
-            type="number"
-            id="zigaretten"
-            inputmode="numeric"
-            min="0"
-            max="200"
-            step="1"
-            placeholder="0"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="zigaretten"
+                        >Zigaretten / Tag</label
+                    >
+                    <input
+                        type="number"
+                        id="zigaretten"
+                        inputmode="numeric"
+                        min="0"
+                        max="200"
+                        step="1"
+                        placeholder="0"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="familie">Familie (Anamnese)</label>
-          <select id="familie">
-            <option value="">– bitte wählen –</option>
-            <option value="Nein">Nein</option>
-            <option value="Ja">Ja</option>
-          </select>
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="familie"
+                        >Familie (Anamnese)</label
+                    >
+                    <select id="familie">
+                        <option value="">– bitte wählen –</option>
+                        <option value="Nein">Nein</option>
+                        <option value="Ja">Ja</option>
+                    </select>
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="schritte">Schritte / Tag</label>
-          <input
-            type="number"
-            id="schritte"
-            inputmode="numeric"
-            min="0"
-            max="100000"
-            step="100"
-            placeholder="–"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="schritte"
+                        >Schritte / Tag</label
+                    >
+                    <input
+                        type="number"
+                        id="schritte"
+                        inputmode="numeric"
+                        min="0"
+                        max="100000"
+                        step="100"
+                        placeholder="–"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="ernaehrung">Ernährung (1–10)</label>
-          <input
-            type="number"
-            id="ernaehrung"
-            inputmode="numeric"
-            min="1"
-            max="10"
-            step="1"
-            placeholder="1–10"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="ernaehrung"
+                        >Ernährung (1–10)</label
+                    >
+                    <input
+                        type="number"
+                        id="ernaehrung"
+                        inputmode="numeric"
+                        min="1"
+                        max="10"
+                        step="1"
+                        placeholder="1–10"
+                    />
+                </div>
 
-        <div class="eingabefeld">
-          <label class="einheit-label" for="schlaf">Schlaf (h / Nacht)</label>
-          <input
-            type="text"
-            id="schlaf"
-            inputmode="decimal"
-            autocomplete="off"
-            placeholder="z. B. 7,5"
-          />
-        </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label" for="schlaf"
+                        >Schlaf (h / Nacht)</label
+                    >
+                    <input
+                        type="text"
+                        id="schlaf"
+                        inputmode="decimal"
+                        autocomplete="off"
+                        placeholder="z. B. 7,5"
+                    />
+                </div>
+            </div>
+        </form>
 
-      </div>
-    </form>
-
-    <!-- ================================
-         BEFUNDTEXT (eine Box, Absätze)
+        <!-- ================================
+         BEFUNDTEXT
          ================================ -->
-    <div class="out-card">
-      <div class="outrow">
-        <pre id="out"></pre>
-        <button
-          type="button"
-          id="outCopy"
-          class="BTN"
-          title="Text kopieren"
-          aria-label="Text kopieren"
-        >
-          <svg
-            class="ic-copy"
-            xmlns="http://www.w3.org/2000/svg"
-            height="24"
-            width="24"
-            viewBox="0 0 24 24"
-            fill="black"
-          >
-            <path
-              d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"
-            />
-          </svg>
-          <svg
-            class="ic-check"
-            xmlns="http://www.w3.org/2000/svg"
-            height="24"
-            width="24"
-            viewBox="0 0 24 24"
-          >
-            <path d="M5 12.5l4.5 4.5L19 7.5" />
-          </svg>
+        <div class="out-card">
+            <div class="outrow">
+                <pre id="out"></pre>
+                <button
+                    type="button"
+                    id="outCopy"
+                    class="BTN"
+                    title="Text kopieren"
+                    aria-label="Text kopieren"
+                >
+                    <svg
+                        class="ic-copy"
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24"
+                        width="24"
+                        viewBox="0 0 24 24"
+                        fill="black"
+                    >
+                        <path
+                            d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"
+                        />
+                    </svg>
+                    <svg
+                        class="ic-check"
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24"
+                        width="24"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M5 12.5l4.5 4.5L19 7.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <button type="button" id="Save_BTN" class="BTN" title="Speichern">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24"
+                width="24"
+                viewBox="0 -960 960 960"
+                fill="black"
+            >
+                <path
+                    d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Z"
+                />
+            </svg>
         </button>
-      </div>
-    </div>
 
-    <button type="button" id="Save_BTN" class="BTN" title="Speichern">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24"
-        width="24"
-        viewBox="0 -960 960 960"
-        fill="black"
-      >
-        <path
-          d="M840-680v480q0 33-23.5 56.5T760-120H200q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h480l160 160Zm-80 34L646-760H200v560h560v-446ZM565-275q35-35 35-85t-35-85q-35-35-85-35t-85 35q-35 35-35 85t35 85q35 35 85 35t85-35ZM240-560h360v-160H240v160Z"
-        />
-      </svg>
-    </button>
+        <button
+            type="button"
+            id="Next_BTN"
+            class="BTN"
+            data-href="Formular2.html"
+            title="Weiter"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="FFFFFF"
+            >
+                <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+            </svg>
+        </button>
 
-    <button
-      type="button"
-      id="Next_BTN"
-      class="BTN"
-      data-href="Formular2.html"
-      title="Weiter"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24px"
-        viewBox="0 -960 960 960"
-        width="24px"
-        fill="FFFFFF"
-      >
-        <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
-      </svg>
-    </button>
+        <button
+            type="button"
+            id="Back_BTN"
+            class="BTN"
+            data-href="../index.html"
+            title="Zurück"
+        >
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="FFFFFF"
+            >
+                <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+            </svg>
+        </button>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="../auth.js" defer></script>
+        <script src="../script.js" defer></script>
+        <script>
+            // ============================================================
+            //  KONSTANTEN
+            // ============================================================
+            const PATIENT_IDS = [
+                "datum",
+                "patientenId",
+                "geburtsdatum",
+                "groesse",
+                "gewicht",
+                "blutdruck",
+                "geschlecht",
+                "zigaretten",
+                "familie",
+                "schritte",
+                "ernaehrung",
+                "schlaf",
+            ];
 
-    <button
-      type="button"
-      id="Back_BTN"
-      class="BTN"
-      data-href="../index.html"
-      title="Zurück"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        height="24px"
-        viewBox="0 -960 960 960"
-        width="24px"
-        fill="FFFFFF"
-      >
-        <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
-      </svg>
-    </button>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../auth.js" defer></script>
-    <script src="../script.js" defer></script>
-    <script>
-      // ============================================================
-      //  KONSTANTEN
-      // ============================================================
-      const PATIENT_IDS = [
-        "datum",
-        "patientenId",
-        "geburtsdatum",
-        "groesse",
-        "gewicht",
-        "blutdruck",
-        "geschlecht",
-        "zigaretten",
-        "familie",
-        "schritte",
-        "ernaehrung",
-        "schlaf",
-      ];
+            const RECHNER_IDS = [1, 3, 5, 7, 9, 13, 17, 19];
 
-      const RECHNER_IDS = [1, 3, 5, 7, 9, 13, 17, 19];
+            // ============================================================
+            //  LABORTABELLE: Einlesen per Drag & Drop / Einfügen
+            // ============================================================
+            const r0 = (n) => Math.round(n);
+            const r1 = (n) => Math.round(n * 10) / 10;
+            const r2 = (n) => Math.round(n * 100) / 100;
 
-      // ============================================================
-      //  LABORTABELLE: Einlesen per Drag & Drop / Einfügen
-      //  Werte landen im localStorage (Schlüssel "<n>Input") und werden
-      //  auf der Auswertungsseite (index.html) in die Felder geladen
-      // ============================================================
-      const r0 = (n) => Math.round(n);
-      const r1 = (n) => Math.round(n * 10) / 10;
-      const r2 = (n) => Math.round(n * 100) / 100;
+            const LAB_FIELDS = [
+                {
+                    id: "lab9",
+                    key: "9Input",
+                    name: "Gesamt-Cholesterin",
+                    test: (l) =>
+                        /^(gesamt[\s-]*)?cholesterin\b/.test(l) &&
+                        !/hdl|ldl|non|remnant|quotient|index|\//.test(l),
+                    conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
+                },
+                {
+                    id: "lab7",
+                    key: "7Input",
+                    name: "HDL-C",
+                    test: (l) => /^hdl/.test(l) && !/quotient|\//.test(l),
+                    conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
+                },
+                {
+                    id: "lab1",
+                    key: "1Input",
+                    name: "gLDL-C",
+                    test: (l) =>
+                        /^ldl/.test(l) &&
+                        !/apherese|\bnach\b|\bn\.|berechn|calc|quotient|\//.test(
+                            l,
+                        ),
+                    conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
+                },
+                {
+                    id: "lab3",
+                    key: "3Input",
+                    name: "Triglyzeride",
+                    test: (l) => /^(trigly|triacylglycerin)/.test(l),
+                    conv: (v, u) => (u.includes("mmol") ? r0(v / 0.0114) : v),
+                },
+                {
+                    id: "lab13",
+                    key: "13Input",
+                    name: "ApoB",
+                    test: (l) => /^apo(lipoprotein)?[\s-]*b\b/.test(l),
+                    conv: (v, u) => {
+                        if (u.includes("umol")) return r0(v / 0.0195);
+                        if (u.includes("mg/l")) return r1(v / 10);
+                        if (u.includes("mg/dl")) return v;
+                        if (u.includes("g/l") || (!u && v < 10))
+                            return r0(v * 100);
+                        return v;
+                    },
+                },
+                {
+                    id: "lab17",
+                    key: "17Input",
+                    name: "Lp(a)",
+                    test: (l) =>
+                        /^(lipoprotein[\s-]*\(?a\)?|lp\s*\(a\))/.test(l) &&
+                        !/apherese|\bnach\b/.test(l),
+                    conv: (v, u) => {
+                        if (u.includes("mg/dl")) return v;
+                        if (u.includes("mg/l")) return r1(v / 10);
+                        return r1(v / 2.4);
+                    },
+                },
+                {
+                    id: "lab19",
+                    key: "19Input",
+                    name: "HbA1c",
+                    test: (l) => /^(hba1c|hb\s*a1c|häm?oglobin\s*a1c)/.test(l),
+                    conv: (v, u) =>
+                        u.includes("mmol") || (!u && v > 20)
+                            ? r1(v / 10.929 + 2.15)
+                            : v,
+                },
+                {
+                    id: "lab5",
+                    key: "5Input",
+                    name: "Kreatinin",
+                    test: (l) =>
+                        /^kreatinin/.test(l) &&
+                        !/urin|clearance|gfr|harn/.test(l),
+                    conv: (v, u) => (u.includes("umol") ? r2(v / 88.4) : v),
+                },
+            ];
 
-      // [Feld-ID, localStorage-Key, Name, Label-Muster, Umrechnung nach Zielwert]
-      const LAB_FIELDS = [
-        {
-          id: "lab9",
-          key: "9Input",
-          name: "Gesamt-Cholesterin",
-          test: (l) =>
-            /^(gesamt[\s-]*)?cholesterin\b/.test(l) &&
-            !/hdl|ldl|non|remnant|quotient|index|\//.test(l),
-          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
-        },
-        {
-          id: "lab7",
-          key: "7Input",
-          name: "HDL-C",
-          test: (l) => /^hdl/.test(l) && !/quotient|\//.test(l),
-          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
-        },
-        {
-          id: "lab1",
-          key: "1Input",
-          name: "gLDL-C",
-          test: (l) =>
-            /^ldl/.test(l) &&
-            !/apherese|\bnach\b|\bn\.|berechn|calc|quotient|\//.test(l),
-          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.026) : v),
-        },
-        {
-          id: "lab3",
-          key: "3Input",
-          name: "Triglyzeride",
-          test: (l) => /^(trigly|triacylglycerin)/.test(l),
-          conv: (v, u) => (u.includes("mmol") ? r0(v / 0.0114) : v),
-        },
-        {
-          id: "lab13",
-          key: "13Input",
-          name: "ApoB",
-          test: (l) => /^apo(lipoprotein)?[\s-]*b\b/.test(l),
-          conv: (v, u) => {
-            if (u.includes("umol")) return r0(v / 0.0195);
-            if (u.includes("mg/l")) return r1(v / 10);
-            if (u.includes("mg/dl")) return v;
-            if (u.includes("g/l") || (!u && v < 10)) return r0(v * 100);
-            return v;
-          },
-        },
-        {
-          id: "lab17",
-          key: "17Input",
-          name: "Lp(a)",
-          test: (l) =>
-            /^(lipoprotein[\s-]*\(?a\)?|lp\s*\(a\))/.test(l) &&
-            !/apherese|\bnach\b/.test(l),
-          conv: (v, u) => {
-            if (u.includes("mg/dl")) return v;
-            if (u.includes("mg/l")) return r1(v / 10);
-            return r1(v / 2.4); // nmol/l (Standard im Labor) -> mg/dl
-          },
-        },
-        {
-          id: "lab19",
-          key: "19Input",
-          name: "HbA1c",
-          test: (l) => /^(hba1c|hb\s*a1c|häm?oglobin\s*a1c)/.test(l),
-          conv: (v, u) =>
-            u.includes("mmol") || (!u && v > 20)
-              ? r1(v / 10.929 + 2.15)
-              : v,
-        },
-        {
-          id: "lab5",
-          key: "5Input",
-          name: "Kreatinin",
-          test: (l) =>
-            /^kreatinin/.test(l) && !/urin|clearance|gfr|harn/.test(l),
-          conv: (v, u) => (u.includes("umol") ? r2(v / 88.4) : v),
-        },
-      ];
-
-      function labNumber(cell) {
-        const m = String(cell || "")
-          .replace(/\s/g, "")
-          .replace(",", ".")
-          .match(/-?\d+(\.\d+)?/);
-        return m ? parseFloat(m[0]) : NaN;
-      }
-
-      function labParse(txt) {
-        const T = txt
-          .split(/[\t\n\r]+/)
-          .map((x) => x.trim())
-          .filter(Boolean);
-        const isVal = (x) => /^[<>]?\s*-?\d/.test(x || "");
-        const out = {};
-
-        LAB_FIELDS.forEach((f) => {
-          const i = T.findIndex(
-            (x, j) =>
-              f.test(x.toLowerCase()) && !x.includes(":") && isVal(T[j + 1]),
-          );
-          if (i < 0) return;
-
-          const cell = T[i + 1];
-          const v = labNumber(cell);
-          if (isNaN(v)) return;
-
-          // Einheit: Rest der Wertzelle oder die nächste Zelle
-          let unit = cell.replace(/^[<>]?\s*-?[\d.,]+/, "").trim();
-          if (!unit) {
-            const nx = T[i + 2] || "";
-            if (nx.length <= 14 && !isVal(nx)) unit = nx;
-          }
-          unit = unit.toLowerCase().replace(/[µμ]/g, "u");
-
-          const val = f.conv(v, unit);
-          if (isFinite(val)) out[f.id] = { key: f.key, val: String(val) };
-        });
-        return out;
-      }
-
-      // Laborwerte sind hier nicht sichtbar: sie werden nur gespeichert und
-      // erscheinen auf der Auswertungsseite (index.html) und beim Speichern.
-      function labSet(key, val) {
-        localStorage.setItem(key, val);
-      }
-
-      function labMessage(text, ok) {
-        const msg = document.getElementById("labMsg");
-        if (!msg) return;
-        msg.className = ok ? "ok" : "";
-        msg.textContent = text;
-      }
-
-      function labLoad(txt) {
-        const found = labParse(txt || "");
-        const n = Object.keys(found).length;
-        if (!n) {
-          labMessage("Keine Laborwerte erkannt.", false);
-          return;
-        }
-        Object.values(found).forEach((o) => labSet(o.key, o.val));
-        renderBefund();
-
-        const fehlt = LAB_FIELDS.filter((f) => !(f.id in found)).map(
-          (f) => f.name,
-        );
-        labMessage(
-          fehlt.length
-            ? `${n} von ${LAB_FIELDS.length} Werten gelesen (zu sehen in der Auswertung). Fehlt: ${fehlt.join(", ")}.`
-            : `✓ Alle ${LAB_FIELDS.length} Werte gelesen (zu sehen in der Auswertung).`,
-          !fehlt.length,
-        );
-      }
-
-      function initLabDrop() {
-        const drop = document.getElementById("labDrop");
-        if (!drop) return;
-
-        ["dragenter", "dragover"].forEach((e) =>
-          drop.addEventListener(e, (ev) => {
-            ev.preventDefault();
-            drop.classList.add("over");
-          }),
-        );
-        ["dragleave", "drop"].forEach((e) =>
-          drop.addEventListener(e, (ev) => {
-            ev.preventDefault();
-            drop.classList.remove("over");
-          }),
-        );
-        drop.addEventListener("drop", async (ev) => {
-          let t = ev.dataTransfer.getData("text/plain");
-          if (!t && ev.dataTransfer.files[0])
-            t = await ev.dataTransfer.files[0].text();
-          labLoad(t || "");
-        });
-        drop.addEventListener("click", () => drop.focus());
-
-        document.getElementById("labClip")?.addEventListener("click", async (ev) => {
-          ev.stopPropagation();
-          try {
-            labLoad(await navigator.clipboard.readText());
-          } catch (e) {
-            labMessage(
-              "Zugriff auf die Zwischenablage nicht erlaubt. Bitte ⌘V / Strg+V drücken.",
-              false,
-            );
-          }
-        });
-
-        // Strg+V / ⌘V: nur mehrzellige Tabellen abfangen, normales Einfügen
-        // in Eingabefelder bleibt unberührt
-        document.addEventListener("paste", (ev) => {
-          if (ev.target.closest && ev.target.closest("input, textarea, select"))
-            return;
-          const t = (ev.clipboardData || window.clipboardData).getData("text");
-          if (t.split(/[\t\n\r]+/).length < 3) return;
-          ev.preventDefault();
-          labLoad(t);
-        });
-      }
-
-      // ============================================================
-      //  BEFUNDTEXT (aus den Laborwerten im localStorage)
-      // ============================================================
-      function buildBefund() {
-        const Gesamtcholesterin = parseFloat(localStorage.getItem("9Input"));
-        const Triglyceride = parseFloat(localStorage.getItem("3Input"));
-        const HDL_C = parseFloat(localStorage.getItem("7Input"));
-        const ApoB = parseFloat(localStorage.getItem("13Input"));
-        const NON_HDL = Gesamtcholesterin - HDL_C;
-
-        let text =
-          "Der Patient stellte sich zur Beurteilung einer Fettstoffwechselstörung vor.";
-
-        if (!isNaN(Triglyceride) && Triglyceride >= 300) {
-          text +=
-            "\n\nBei einer Hypertriglyceridämie besteht das Risiko einer potentiell lebensbedrohlichen Pankreatitis. " +
-            "Diese Erkrankung trat bisher nicht auf. Das Risiko ist ab Triglycerid-Werten von > 1000 mg/dl deutlich erhöht. " +
-            "Die hier nüchtern erhobenen Werte lagen bei " +
-            Triglyceride +
-            " mg/dl. " +
-            "Das kardiovaskuläre Risiko ist bei Hypertriglyceridämie allenfalls gering erhöht. " +
-            "Ein Anhalt für eine sekundäre Genese habe ich nicht." +
-            "\n\nDie Therapie besteht in erster Linie aus einer Ernährungsberatung. " +
-            "Diese ist bei uns erfolgt, ein Merkblatt wurde ausgehändigt. " +
-            "Im Vordergrund steht die Reduktion von schnellen Kohlehydraten und nicht der Fette, die Reduktion des Alkoholkonsums und ein maßvoller Umgang mit Fleisch. " +
-            "Über eine gesunde Lebensweise mit körperlicher Aktivität sowie Gewichtsreduktion wurde ebenfalls gesprochen.";
-        }
-
-        if (
-          Triglyceride >= 150 &&
-          NON_HDL / ApoB >= 1.7 &&
-          Triglyceride / ApoB >= 1.35
-        ) {
-          text +=
-            "\n\nEs könnte eine familiäre Dysbetalipoproteinämie vorliegen.\n" +
-            "Folgende Befunde liegen vor:\n" +
-            "Triglyceride = " +
-            Triglyceride +
-            " mg/dl UND\n" +
-            "NON-HDL/ApoB-Quotient = " +
-            (NON_HDL / ApoB).toFixed(2) +
-            " mg/dl\n" +
-            "TG/ApoB-Quotient = " +
-            (Triglyceride / ApoB).toFixed(2) +
-            " mg/dl" +
-            "\n\nDie familiäre Dysbetalipoproteinämie (Typ III-Hyperlipidämie nach Fredrickson, autosomal-rezessiv, Häufigkeit ca. 1:2.000) geht auf eine Störung des Metabolismus von Chylomikronen und VLDL-Remnants zurück, deren Aufnahme in die Leber durch Apolipoprotein E (Apo E) vermittelt wird." +
-            "\n\nRemnants sind Abbauprodukte des plasmatischen Lipoprotein-Stoffwechsels und gehören zu den atherogensten Lipidpartikeln. Die betroffenen Patienten haben daher ein sehr hohes Gefäßrisiko (arterielle Verschlusskrankheit, KHK, Schlaganfall)." +
-            "\n\nHäufig finden sich kutane oder tuberöse Xanthome, pathognomisch sind Handlinien-Xanthome." +
-            "\n\nEs wird eine genetische Apolipoprotein E-Typisierung empfohlen.";
-        }
-
-        return text;
-      }
-
-      function renderBefund() {
-        const out = document.getElementById("out");
-        if (out) out.textContent = buildBefund();
-      }
-
-      async function copyText(text) {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
-          return;
-        }
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        ta.style.top = "0";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        ta.setSelectionRange(0, ta.value.length);
-        const ok = document.execCommand("copy");
-        document.body.removeChild(ta);
-        if (!ok) throw new Error("Kopieren fehlgeschlagen");
-      }
-
-      function initBefundCopy() {
-        const btn = document.getElementById("outCopy");
-        if (!btn) return;
-        btn.addEventListener("click", async () => {
-          try {
-            await copyText(document.getElementById("out").textContent);
-            btn.classList.add("done");
-            clearTimeout(btn._t);
-            btn._t = setTimeout(() => btn.classList.remove("done"), 2000);
-          } catch (err) {
-            console.error("Fehler beim Kopieren:", err);
-            showPopup(
-              "Kopieren fehlgeschlagen",
-              "Der Text konnte nicht kopiert werden.",
-              "error",
-            );
-          }
-        });
-      }
-
-      // ============================================================
-      //  HILFSFUNKTIONEN
-      // ============================================================
-      function parseDeNum(v) {
-        if (v === null || v === undefined || v === "") return 0;
-        const n = parseFloat(String(v).replace(",", "."));
-        return isFinite(n) ? n : 0;
-      }
-
-      // Geburtsdatum nur als Monat + Jahr (Eingabe "MM.JJJJ").
-      // Akzeptiert auch alte, bereits gespeicherte Werte wie "1985-03-12".
-      function parseGeburt(v) {
-        if (!v) return null;
-        const s = String(v).trim();
-        let m, y;
-        let r = s.match(/^(\d{1,2})[.\/-](\d{4})$/);
-        if (r) {
-          m = parseInt(r[1], 10);
-          y = parseInt(r[2], 10);
-        } else {
-          r = s.match(/^(\d{4})-(\d{1,2})(?:-\d{1,2})?$/);
-          if (!r) return null;
-          y = parseInt(r[1], 10);
-          m = parseInt(r[2], 10);
-        }
-        if (m < 1 || m > 12) return null;
-        if (y < 1900 || y > new Date().getFullYear()) return null;
-        return { m, y };
-      }
-
-      // Wert für das Monatsfeld: "1985-03"
-      function geburtISO(v) {
-        const g = parseGeburt(v);
-        return g ? `${g.y}-${String(g.m).padStart(2, "0")}` : v || "";
-      }
-
-      // Für die Datenbank: "3.1985" (ohne führende Null, wie bisher beim Datum)
-      function geburtPayload(v) {
-        const g = parseGeburt(v);
-        return g ? `${g.m}.${g.y}` : "";
-      }
-
-      // Alter zum Untersuchungsdatum (Feld "Datum"), sonst zu heute
-      function updateAlter() {
-        const alterEl = document.getElementById("alter");
-        const geburtEl = document.getElementById("geburtsdatum");
-        const datumEl = document.getElementById("datum");
-        if (!alterEl || !geburtEl) return;
-
-        const g = parseGeburt(geburtEl.value);
-        if (!g) {
-          alterEl.value = "";
-          return;
-        }
-
-        let refY, refM;
-        const iso = datumEl && datumEl.value.match(/^(\d{4})-(\d{2})-\d{2}$/);
-        if (iso) {
-          refY = parseInt(iso[1], 10);
-          refM = parseInt(iso[2], 10);
-        } else {
-          const now = new Date();
-          refY = now.getFullYear();
-          refM = now.getMonth() + 1;
-        }
-
-        let alter = refY - g.y;
-        if (refM < g.m) alter -= 1;
-        alterEl.value = alter >= 0 ? String(alter) : "";
-      }
-
-      function formatDate(iso, removeLeadingZeros = false) {
-        if (!iso) return "";
-        const parts = String(iso).split("-");
-        if (parts.length !== 3) return iso;
-
-        let [y, m, d] = parts;
-        if (removeLeadingZeros) {
-          m = String(parseInt(m, 10));
-          d = String(parseInt(d, 10));
-        }
-        return `${d}.${m}.${y}`;
-      }
-
-      function parseGroesse(v) {
-        const n = parseDeNum(v);
-        if (n <= 0) return 0;
-        return +n.toFixed(2);
-      }
-
-      function parseBlutdruck(v) {
-        if (!v) return 0;
-        const m = String(v).match(/\d+/);
-        return m ? parseFloat(m[0]) : 0;
-      }
-
-      function num(key) {
-        return parseDeNum(localStorage.getItem(key));
-      }
-
-      function patientVal(id) {
-        return localStorage.getItem("patient_" + id) || "";
-      }
-
-      // ============================================================
-      //  BMI LIVE
-      // ============================================================
-      function updateBMI() {
-        const groesseEl = document.getElementById("groesse");
-        const gewichtEl = document.getElementById("gewicht");
-        const bmiEl = document.getElementById("bmi");
-        if (!groesseEl || !gewichtEl || !bmiEl) return;
-
-        const groesse = parseDeNum(groesseEl.value);
-        const gewicht = parseDeNum(gewichtEl.value);
-
-        if (groesse > 0 && gewicht > 0) {
-          const bmi = gewicht / (groesse * groesse);
-          bmiEl.value = bmi.toFixed(1).replace(".", ",");
-        } else {
-          bmiEl.value = "";
-        }
-      }
-
-      // ============================================================
-      //  RESET
-      // ============================================================
-      function resetForm() {
-        PATIENT_IDS.forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) el.value = "";
-        });
-
-        PATIENT_IDS.forEach((id) => {
-          localStorage.removeItem("patient_" + id);
-        });
-
-        RECHNER_IDS.forEach((n) => {
-          localStorage.removeItem(`${n}Input`);
-        });
-
-        labMessage("", false);
-
-        updateBMI();
-        updateAlter();
-        renderBefund();
-      }
-
-      // ============================================================
-      //  SLIDE-ANIMATION ZWISCHEN SEITEN
-      // ============================================================
-      function initPageTransitions() {
-        document.querySelectorAll("a[href]").forEach((link) => {
-          link.addEventListener("click", (e) => {
-            const href = link.getAttribute("href");
-            if (
-              !href ||
-              href === "#" ||
-              href.startsWith("http") ||
-              link.target === "_blank"
-            )
-              return;
-
-            if (href === window.location.pathname.split("/").pop()) return;
-
-            e.preventDefault();
-
-            if (link.id === "Back_BTN") {
-              document.body.classList.add("exit-right");
-              document.body.style.transformOrigin = "right center";
-            } else {
-              document.body.classList.add("exit-left");
-              document.body.style.transformOrigin = "left center";
+            function labNumber(cell) {
+                const m = String(cell || "")
+                    .replace(/\s/g, "")
+                    .replace(",", ".")
+                    .match(/-?\d+(\.\d+)?/);
+                return m ? parseFloat(m[0]) : NaN;
             }
 
-            setTimeout(() => (window.location.href = href), 450);
-          });
-        });
-      }
+            function labParse(txt) {
+                const T = txt
+                    .split(/[\t\n\r]+/)
+                    .map((x) => x.trim())
+                    .filter(Boolean);
+                const isVal = (x) => /^[<>]?\s*-?\d/.test(x || "");
+                const out = {};
 
-      // ============================================================
-      //  START
-      // ============================================================
-      document.addEventListener("DOMContentLoaded", () => {
-        // Fade-In sofort
-        document.body.classList.add("page-loaded");
+                LAB_FIELDS.forEach((f) => {
+                    const i = T.findIndex(
+                        (x, j) =>
+                            f.test(x.toLowerCase()) &&
+                            !x.includes(":") &&
+                            isVal(T[j + 1]),
+                    );
+                    if (i < 0) return;
 
-        if (!requireLogin()) return;
+                    const cell = T[i + 1];
+                    const v = labNumber(cell);
+                    if (isNaN(v)) return;
 
-        // BMI live
-        ["groesse", "gewicht"].forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) el.addEventListener("input", updateBMI);
-        });
+                    let unit = cell.replace(/^[<>]?\s*-?[\d.,]+/, "").trim();
+                    if (!unit) {
+                        const nx = T[i + 2] || "";
+                        if (nx.length <= 14 && !isVal(nx)) unit = nx;
+                    }
+                    unit = unit.toLowerCase().replace(/[µμ]/g, "u");
 
-        // Werte aus localStorage wiederherstellen
-        PATIENT_IDS.forEach((id) => {
-          const el = document.getElementById(id);
-          if (!el) return;
-          const saved = localStorage.getItem("patient_" + id);
-          if (saved !== null) el.value = saved;
-        });
-        const geburtEl = document.getElementById("geburtsdatum");
-        if (geburtEl) {
-          geburtEl.max = new Date().toISOString().slice(0, 7);
-          geburtEl.value = geburtISO(geburtEl.value);
-        }
-        updateBMI();
+                    const val = f.conv(v, unit);
+                    if (isFinite(val))
+                        out[f.id] = { key: f.key, val: String(val) };
+                });
+                return out;
+            }
 
-        // Geburtsdatum (Monat/Jahr) + Alter live
-        ["input", "change"].forEach((evt) =>
-          geburtEl?.addEventListener(evt, () => {
-            localStorage.setItem("patient_geburtsdatum", geburtEl.value);
-            updateAlter();
-          }),
-        );
-        ["input", "change"].forEach((evt) =>
-          document.getElementById("datum")?.addEventListener(evt, updateAlter),
-        );
-        updateAlter();
+            function labSet(key, val) {
+                localStorage.setItem(key, val);
+            }
 
-        // Labortabelle (Drag & Drop)
-        initLabDrop();
+            function labMessage(text, ok) {
+                const msg = document.getElementById("labMsg");
+                if (!msg) return;
+                msg.className = ok ? "ok" : "";
+                msg.textContent = text;
+            }
 
-        // Befundtext unten
-        renderBefund();
-        initBefundCopy();
+            function labLoad(txt) {
+                const found = labParse(txt || "");
+                const n = Object.keys(found).length;
+                if (!n) {
+                    labMessage("Keine Laborwerte erkannt.", false);
+                    return;
+                }
+                Object.values(found).forEach((o) => labSet(o.key, o.val));
+                renderBefund();
 
-        // Reset
-        document
-          .getElementById("resetBtn")
-          ?.addEventListener("click", resetForm);
+                const fehlt = LAB_FIELDS.filter((f) => !(f.id in found)).map(
+                    (f) => f.name,
+                );
+                labMessage(
+                    fehlt.length
+                        ? `${n} von ${LAB_FIELDS.length} Werten gelesen (zu sehen in der Auswertung). Fehlt: ${fehlt.join(", ")}.`
+                        : `✓ Alle ${LAB_FIELDS.length} Werte gelesen (zu sehen in der Auswertung).`,
+                    !fehlt.length,
+                );
+            }
 
-        // Slide-Animation
-        initPageTransitions();
+            function initLabDrop() {
+                const drop = document.getElementById("labDrop");
+                if (!drop) return;
 
-        // --------------------------------------------------------
-        // SPEICHERN
-        // --------------------------------------------------------
-        const saveBtn = document.getElementById("Save_BTN");
+                ["dragenter", "dragover"].forEach((e) =>
+                    drop.addEventListener(e, (ev) => {
+                        ev.preventDefault();
+                        drop.classList.add("over");
+                    }),
+                );
+                ["dragleave", "drop"].forEach((e) =>
+                    drop.addEventListener(e, (ev) => {
+                        ev.preventDefault();
+                        drop.classList.remove("over");
+                    }),
+                );
+                drop.addEventListener("drop", async (ev) => {
+                    let t = ev.dataTransfer.getData("text/plain");
+                    if (!t && ev.dataTransfer.files[0])
+                        t = await ev.dataTransfer.files[0].text();
+                    labLoad(t || "");
+                });
+                drop.addEventListener("click", () => drop.focus());
 
-        saveBtn?.addEventListener("click", async () => {
-          PATIENT_IDS.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) localStorage.setItem("patient_" + id, el.value);
-          });
+                document
+                    .getElementById("labClip")
+                    ?.addEventListener("click", async (ev) => {
+                        ev.stopPropagation();
+                        try {
+                            labLoad(await navigator.clipboard.readText());
+                        } catch (e) {
+                            labMessage(
+                                "Zugriff auf die Zwischenablage nicht erlaubt. Bitte ⌘V / Strg+V drücken.",
+                                false,
+                            );
+                        }
+                    });
 
-          const familieBool = patientVal("familie") === "Ja";
-          const ernaehrungNum = parseDeNum(patientVal("ernaehrung"));
+                document.addEventListener("paste", (ev) => {
+                    if (
+                        ev.target.closest &&
+                        ev.target.closest("input, textarea, select")
+                    )
+                        return;
+                    const t = (
+                        ev.clipboardData || window.clipboardData
+                    ).getData("text");
+                    if (t.split(/[\t\n\r]+/).length < 3) return;
+                    ev.preventDefault();
+                    labLoad(t);
+                });
+            }
 
-          const payload = {
-            Datum: formatDate(patientVal("datum")),
-            Gesamt_Cholesterin: num("9Input"),
-            HDL_C: num("7Input"),
-            eLDL_C: num("11Input"),
-            gLDL_C: num("1Input"),
-            non_HDL_C: num("15Input"),
-            Triglyzeride: num("3Input"),
-            ApoB: num("13Input"),
-            Lp_a: num("18Input"),
-            HbA1c: num("19Input"),
-            Kreatinin: num("5Input"),
-            eRemnant_C: num("21Input"),
-            eLDL_CS: num("23Input"),
-            Lp_a_CRM: num("25Input"),
-            CorrLDL_CRM: num("27Input"),
-            Lp_a_CAHA: num("29Input"),
-            deltaLDL_C: num("33Input"),
-            Non_HDL_C_ApoB: num("35Input"),
-            TG_ApoB: num("36Input"),
-            Gesamtcholesterin_ApoB: num("37Input"),
-            LDL_C_ApoB: num("38Input"),
+            // ============================================================
+            //  BEFUNDTEXT
+            // ============================================================
+            function buildBefund() {
+                const Gesamtcholesterin = parseFloat(
+                    localStorage.getItem("9Input"),
+                );
+                const Triglyceride = parseFloat(localStorage.getItem("3Input"));
+                const HDL_C = parseFloat(localStorage.getItem("7Input"));
+                const ApoB = parseFloat(localStorage.getItem("13Input"));
+                const NON_HDL = Gesamtcholesterin - HDL_C;
 
-            PatientenID: parseDeNum(patientVal("patientenId")),
-            Geburtsdatum: geburtPayload(patientVal("geburtsdatum")),
-            Größe: parseGroesse(patientVal("groesse")),
-            Gewicht: parseDeNum(patientVal("gewicht")),
-            Blutdruck: parseBlutdruck(patientVal("blutdruck")),
-            Geschlecht: patientVal("geschlecht"),
-            Zigarettenprotag: parseDeNum(patientVal("zigaretten")),
-            Familie: familieBool,
-            Schritte: parseDeNum(patientVal("schritte")),
-            Ernährung: ernaehrungNum,
-            Schlaf: parseDeNum(patientVal("schlaf")),
-          };
+                let text =
+                    "Der Patient stellte sich zur Beurteilung einer Fettstoffwechselstörung vor.";
 
-          if (!payload.PatientenID) {
-            showPopup(
-              "Patienten-ID fehlt",
-              "Bitte eine Patienten-ID eingeben.",
-              "warning",
-            );
-            return;
-          }
+                if (!isNaN(Triglyceride) && Triglyceride >= 300) {
+                    text +=
+                        "\n\nBei einer Hypertriglyceridämie besteht das Risiko einer potentiell lebensbedrohlichen Pankreatitis. " +
+                        "Diese Erkrankung trat bisher nicht auf. Das Risiko ist ab Triglycerid-Werten von > 1000 mg/dl deutlich erhöht. " +
+                        "Die hier nüchtern erhobenen Werte lagen bei " +
+                        Triglyceride +
+                        " mg/dl. " +
+                        "Das kardiovaskuläre Risiko ist bei Hypertriglyceridämie allenfalls gering erhöht. " +
+                        "Ein Anhalt für eine sekundäre Genese habe ich nicht." +
+                        "\n\nDie Therapie besteht in erster Linie aus einer Ernährungsberatung. " +
+                        "Diese ist bei uns erfolgt, ein Merkblatt wurde ausgehändigt. " +
+                        "Im Vordergrund steht die Reduktion von schnellen Kohlehydraten und nicht der Fette, die Reduktion des Alkoholkonsums und ein maßvoller Umgang mit Fleisch. " +
+                        "Über eine gesunde Lebensweise mit körperlicher Aktivität sowie Gewichtsreduktion wurde ebenfalls gesprochen.";
+                }
 
-          saveBtn.disabled = true;
+                if (
+                    Triglyceride >= 150 &&
+                    NON_HDL / ApoB >= 1.7 &&
+                    Triglyceride / ApoB >= 1.35
+                ) {
+                    text +=
+                        "\n\nEs könnte eine familiäre Dysbetalipoproteinämie vorliegen.\n" +
+                        "Folgende Befunde liegen vor:\n" +
+                        "Triglyceride = " +
+                        Triglyceride +
+                        " mg/dl UND\n" +
+                        "NON-HDL/ApoB-Quotient = " +
+                        (NON_HDL / ApoB).toFixed(2) +
+                        " mg/dl\n" +
+                        "TG/ApoB-Quotient = " +
+                        (Triglyceride / ApoB).toFixed(2) +
+                        " mg/dl" +
+                        "\n\nDie familiäre Dysbetalipoproteinämie (Typ III-Hyperlipidämie nach Fredrickson, autosomal-rezessiv, Häufigkeit ca. 1:2.000) geht auf eine Störung des Metabolismus von Chylomikronen und VLDL-Remnants zurück, deren Aufnahme in die Leber durch Apolipoprotein E (Apo E) vermittelt wird." +
+                        "\n\nRemnants sind Abbauprodukte des plasmatischen Lipoprotein-Stoffwechsels und gehören zu den atherogensten Lipidpartikeln. Die betroffenen Patienten haben daher ein sehr hohes Gefäßrisiko (arterielle Verschlusskrankheit, KHK, Schlaganfall)." +
+                        "\n\nHäufig finden sich kutane oder tuberöse Xanthome, pathognomisch sind Handlinien-Xanthome." +
+                        "\n\nEs wird eine genetische Apolipoprotein E-Typisierung empfohlen.";
+                }
 
-          try {
-            const res = await fetch(`${API_URL}/add-row`, {
-              method: "POST",
-              headers: authHeaders(),
-              body: JSON.stringify(payload),
+                return text;
+            }
+
+            function renderBefund() {
+                const out = document.getElementById("out");
+                if (out) out.textContent = buildBefund();
+            }
+
+            async function copyText(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    return;
+                }
+                const ta = document.createElement("textarea");
+                ta.value = text;
+                ta.style.position = "fixed";
+                ta.style.left = "-9999px";
+                ta.style.top = "0";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.focus();
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                const ok = document.execCommand("copy");
+                document.body.removeChild(ta);
+                if (!ok) throw new Error("Kopieren fehlgeschlagen");
+            }
+
+            function initBefundCopy() {
+                const btn = document.getElementById("outCopy");
+                if (!btn) return;
+                btn.addEventListener("click", async () => {
+                    try {
+                        await copyText(
+                            document.getElementById("out").textContent,
+                        );
+                        btn.classList.add("done");
+                        clearTimeout(btn._t);
+                        btn._t = setTimeout(
+                            () => btn.classList.remove("done"),
+                            2000,
+                        );
+                    } catch (err) {
+                        console.error("Fehler beim Kopieren:", err);
+                        showPopup(
+                            "Kopieren fehlgeschlagen",
+                            "Der Text konnte nicht kopiert werden.",
+                            "error",
+                        );
+                    }
+                });
+            }
+
+            // ============================================================
+            //  HILFSFUNKTIONEN
+            // ============================================================
+            function parseDeNum(v) {
+                if (v === null || v === undefined || v === "") return 0;
+                const n = parseFloat(String(v).replace(",", "."));
+                return isFinite(n) ? n : 0;
+            }
+
+            function parseGeburt(v) {
+                if (!v) return null;
+                const s = String(v).trim();
+                let m, y;
+                let r = s.match(/^(\d{1,2})[.\/-](\d{4})$/);
+                if (r) {
+                    m = parseInt(r[1], 10);
+                    y = parseInt(r[2], 10);
+                } else {
+                    r = s.match(/^(\d{4})-(\d{1,2})(?:-\d{1,2})?$/);
+                    if (!r) return null;
+                    y = parseInt(r[1], 10);
+                    m = parseInt(r[2], 10);
+                }
+                if (m < 1 || m > 12) return null;
+                if (y < 1900 || y > new Date().getFullYear()) return null;
+                return { m, y };
+            }
+
+            function geburtISO(v) {
+                const g = parseGeburt(v);
+                return g ? `${g.y}-${String(g.m).padStart(2, "0")}` : v || "";
+            }
+
+            function geburtPayload(v) {
+                const g = parseGeburt(v);
+                return g ? `${g.m}.${g.y}` : "";
+            }
+
+            function updateAlter() {
+                const alterEl = document.getElementById("alter");
+                const geburtEl = document.getElementById("geburtsdatum");
+                const datumEl = document.getElementById("datum");
+                if (!alterEl || !geburtEl) return;
+
+                const g = parseGeburt(geburtEl.value);
+                if (!g) {
+                    alterEl.value = "";
+                    return;
+                }
+
+                let refY, refM;
+                const iso =
+                    datumEl && datumEl.value.match(/^(\d{4})-(\d{2})-\d{2}$/);
+                if (iso) {
+                    refY = parseInt(iso[1], 10);
+                    refM = parseInt(iso[2], 10);
+                } else {
+                    const now = new Date();
+                    refY = now.getFullYear();
+                    refM = now.getMonth() + 1;
+                }
+
+                let alter = refY - g.y;
+                if (refM < g.m) alter -= 1;
+                alterEl.value = alter >= 0 ? String(alter) : "";
+            }
+
+            function formatDate(iso, removeLeadingZeros = false) {
+                if (!iso) return "";
+                const parts = String(iso).split("-");
+                if (parts.length !== 3) return iso;
+
+                let [y, m, d] = parts;
+                if (removeLeadingZeros) {
+                    m = String(parseInt(m, 10));
+                    d = String(parseInt(d, 10));
+                }
+                return `${d}.${m}.${y}`;
+            }
+
+            function parseGroesse(v) {
+                const n = parseDeNum(v);
+                if (n <= 0) return 0;
+                return +n.toFixed(2);
+            }
+
+            function parseBlutdruck(v) {
+                if (!v) return 0;
+                const m = String(v).match(/\d+/);
+                return m ? parseFloat(m[0]) : 0;
+            }
+
+            function num(key) {
+                return parseDeNum(localStorage.getItem(key));
+            }
+
+            function patientVal(id) {
+                return localStorage.getItem("patient_" + id) || "";
+            }
+
+            // ============================================================
+            //  BMI LIVE
+            // ============================================================
+            function updateBMI() {
+                const groesseEl = document.getElementById("groesse");
+                const gewichtEl = document.getElementById("gewicht");
+                const bmiEl = document.getElementById("bmi");
+                if (!groesseEl || !gewichtEl || !bmiEl) return;
+
+                const groesse = parseDeNum(groesseEl.value);
+                const gewicht = parseDeNum(gewichtEl.value);
+
+                if (groesse > 0 && gewicht > 0) {
+                    const bmi = gewicht / (groesse * groesse);
+                    bmiEl.value = bmi.toFixed(1).replace(".", ",");
+                } else {
+                    bmiEl.value = "";
+                }
+            }
+
+            // ============================================================
+            //  RESET
+            // ============================================================
+            function resetForm() {
+                PATIENT_IDS.forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = "";
+                });
+
+                PATIENT_IDS.forEach((id) => {
+                    localStorage.removeItem("patient_" + id);
+                });
+
+                RECHNER_IDS.forEach((n) => {
+                    localStorage.removeItem(`${n}Input`);
+                });
+
+                labMessage("", false);
+
+                updateBMI();
+                updateAlter();
+                renderBefund();
+            }
+
+            // ============================================================
+            //  SLIDE-ANIMATION ZWISCHEN SEITEN
+            // ============================================================
+            function initPageTransitions() {
+                document.querySelectorAll("a[href]").forEach((link) => {
+                    link.addEventListener("click", (e) => {
+                        const href = link.getAttribute("href");
+                        if (
+                            !href ||
+                            href === "#" ||
+                            href.startsWith("http") ||
+                            link.target === "_blank"
+                        )
+                            return;
+
+                        if (href === window.location.pathname.split("/").pop())
+                            return;
+
+                        e.preventDefault();
+
+                        if (link.id === "Back_BTN") {
+                            document.body.classList.add("exit-right");
+                            document.body.style.transformOrigin =
+                                "right center";
+                        } else {
+                            document.body.classList.add("exit-left");
+                            document.body.style.transformOrigin = "left center";
+                        }
+
+                        setTimeout(() => (window.location.href = href), 450);
+                    });
+                });
+            }
+
+            // ============================================================
+            //  START
+            // ============================================================
+            document.addEventListener("DOMContentLoaded", async () => {
+                // Fade-In sofort
+                document.body.classList.add("page-loaded");
+
+                // Auf Backend warten (Popup "Backend fährt hoch" falls aus)
+                await window.__backendReady;
+
+                if (!requireLogin()) return;
+
+                // BMI live
+                ["groesse", "gewicht"].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el) el.addEventListener("input", updateBMI);
+                });
+
+                // Werte aus localStorage wiederherstellen
+                PATIENT_IDS.forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const saved = localStorage.getItem("patient_" + id);
+                    if (saved !== null) el.value = saved;
+                });
+                const geburtEl = document.getElementById("geburtsdatum");
+                if (geburtEl) {
+                    geburtEl.max = new Date().toISOString().slice(0, 7);
+                    geburtEl.value = geburtISO(geburtEl.value);
+                }
+                updateBMI();
+
+                // Geburtsdatum (Monat/Jahr) + Alter live
+                ["input", "change"].forEach((evt) =>
+                    geburtEl?.addEventListener(evt, () => {
+                        localStorage.setItem(
+                            "patient_geburtsdatum",
+                            geburtEl.value,
+                        );
+                        updateAlter();
+                    }),
+                );
+                ["input", "change"].forEach((evt) =>
+                    document
+                        .getElementById("datum")
+                        ?.addEventListener(evt, updateAlter),
+                );
+                updateAlter();
+
+                // Labortabelle (Drag & Drop)
+                initLabDrop();
+
+                // Befundtext unten
+                renderBefund();
+                initBefundCopy();
+
+                // Reset
+                document
+                    .getElementById("resetBtn")
+                    ?.addEventListener("click", resetForm);
+
+                // Slide-Animation
+                initPageTransitions();
+
+                // --------------------------------------------------------
+                // SPEICHERN
+                // --------------------------------------------------------
+                const saveBtn = document.getElementById("Save_BTN");
+
+                saveBtn?.addEventListener("click", async () => {
+                    PATIENT_IDS.forEach((id) => {
+                        const el = document.getElementById(id);
+                        if (el) localStorage.setItem("patient_" + id, el.value);
+                    });
+
+                    const familieBool = patientVal("familie") === "Ja";
+                    const ernaehrungNum = parseDeNum(patientVal("ernaehrung"));
+
+                    const payload = {
+                        Datum: formatDate(patientVal("datum")),
+                        Gesamt_Cholesterin: num("9Input"),
+                        HDL_C: num("7Input"),
+                        eLDL_C: num("11Input"),
+                        gLDL_C: num("1Input"),
+                        non_HDL_C: num("15Input"),
+                        Triglyzeride: num("3Input"),
+                        ApoB: num("13Input"),
+                        Lp_a: num("18Input"),
+                        HbA1c: num("19Input"),
+                        Kreatinin: num("5Input"),
+                        eRemnant_C: num("21Input"),
+                        eLDL_CS: num("23Input"),
+                        Lp_a_CRM: num("25Input"),
+                        CorrLDL_CRM: num("27Input"),
+                        Lp_a_CAHA: num("29Input"),
+                        deltaLDL_C: num("33Input"),
+                        Non_HDL_C_ApoB: num("35Input"),
+                        TG_ApoB: num("36Input"),
+                        Gesamtcholesterin_ApoB: num("37Input"),
+                        LDL_C_ApoB: num("38Input"),
+
+                        PatientenID: parseDeNum(patientVal("patientenId")),
+                        Geburtsdatum: geburtPayload(patientVal("geburtsdatum")),
+                        Größe: parseGroesse(patientVal("groesse")),
+                        Gewicht: parseDeNum(patientVal("gewicht")),
+                        Blutdruck: parseBlutdruck(patientVal("blutdruck")),
+                        Geschlecht: patientVal("geschlecht"),
+                        Zigarettenprotag: parseDeNum(patientVal("zigaretten")),
+                        Familie: familieBool,
+                        Schritte: parseDeNum(patientVal("schritte")),
+                        Ernährung: ernaehrungNum,
+                        Schlaf: parseDeNum(patientVal("schlaf")),
+                    };
+
+                    if (!payload.PatientenID) {
+                        showPopup(
+                            "Patienten-ID fehlt",
+                            "Bitte eine Patienten-ID eingeben.",
+                            "warning",
+                        );
+                        return;
+                    }
+
+                    saveBtn.disabled = true;
+
+                    try {
+                        const res = await fetch(`${API_URL}/add-row`, {
+                            method: "POST",
+                            headers: authHeaders(),
+                            body: JSON.stringify(payload),
+                        });
+
+                        if (res.status === 401) {
+                            logout();
+                            return;
+                        }
+
+                        const result = await res.json();
+                        if (!res.ok) {
+                            throw new Error(
+                                result.detail || "Fehler beim Speichern",
+                            );
+                        }
+
+                        showPopup(
+                            "Gespeichert",
+                            `Der Datensatz wurde mit ID ${result.id} gespeichert.`,
+                            "success",
+                        );
+                    } catch (err) {
+                        showPopup(
+                            "Fehler beim Speichern",
+                            err.message,
+                            "error",
+                        );
+                    } finally {
+                        saveBtn.disabled = false;
+                    }
+                });
             });
-
-            if (res.status === 401) {
-              logout();
-              return;
-            }
-
-            const result = await res.json();
-            if (!res.ok) {
-              throw new Error(result.detail || "Fehler beim Speichern");
-            }
-
-            showPopup(
-              "Gespeichert",
-              `Der Datensatz wurde mit ID ${result.id} gespeichert.`,
-              "success",
-            );
-          } catch (err) {
-            showPopup("Fehler beim Speichern", err.message, "error");
-          } finally {
-            saveBtn.disabled = false;
-          }
-        });
-      });
-    </script>
-  </body>
+        </script>
+        <script src="../score2-befund.js"></script>
+    </body>
 </html>
