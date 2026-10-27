@@ -1,271 +1,540 @@
 <!doctype html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Lipids</title>
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="favicon-16x16.png"
+        />
+        <link rel="manifest" href="site.webmanifest" />
+        <link rel="stylesheet" href="styles.css" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+        />
+    </head>
+    <body>
+        <div class="header">
+            <div class="umschalter">
+                <input type="checkbox" id="toggel-All" />
+                <div class="umschalter-knopf"></div>
+            </div>
 
-    <link
-      rel="icon"
-      type="image/png"
-      href="FastTrack_CKD/favicon-96x96.png"
-      sizes="96x96"
-    />
-    <link rel="icon" type="image/svg+xml" href="FastTrack_CKD/favicon.svg" />
-    <link rel="shortcut icon" href="FastTrack_CKD/favicon.ico" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="FastTrack_CKD/apple-touch-icon.png"
-    />
-    <link rel="manifest" href="FastTrack_CKD/site.webmanifest" />
-    <title>Weiterleitung</title>
-    <meta
-      name="description"
-      content="Wählen Sie zwischen Lipid, FastTrack CKD und Dialyse NU."
-    />
+            <h1>Lipids</h1>
 
-    <style>
-      * {
-        box-sizing: border-box;
-      }
+            <!-- USER-BADGE + LOGOUT zusammen rechts -->
+            <div class="header-right">
+                <!-- 1. Badge (links) -->
+                <div class="user-badge" title="Angemeldet">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 -960 960 960"
+                    >
+                        <path
+                            d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"
+                        />
+                    </svg>
+                    <span id="usernameLabel">…</span>
+                </div>
 
-      body {
-        margin: 0;
-        min-height: 100vh;
-        padding: 40px 20px;
+                <!-- 2. Logout (rechts) -->
+                <button type="button" id="logoutBtn" class="BTN" title="Logout">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24"
+                        width="24"
+                        viewBox="0 -960 960 960"
+                        fill="black"
+                    >
+                        <path
+                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"
+                        />
+                    </svg>
+                </button>
+            </div>
 
-        font-family: Arial, Helvetica, sans-serif;
-        background: linear-gradient(135deg, #f8f9fb, #e9edf2);
+            <button
+                type="button"
+                id="resetBtn"
+                class="BTN"
+                title="Zurücksetzen"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24"
+                    width="24"
+                    viewBox="0 -960 960 960"
+                    fill="black"
+                >
+                    <path
+                        d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"
+                    />
+                </svg>
+            </button>
+        </div>
+        <form>
+            <div class="umrechner">
+                <label
+                    ><b class="title">Gesamt-<br />Cholesterin</b></label
+                >
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
+                <div class="eingabefeld">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="9Input" />
+                </div>
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"><b>Faktor:</b> 0.026</span>
+                </span>
 
-      .page {
-        width: 100%;
-        max-width: 1100px;
-        margin: auto;
-      }
+                <div class="eingabefeld">
+                    <label class="einheit-label">mmo/l</label>
+                    <input type="number" step="any" id="10Input" />
+                </div>
+            </div>
 
-      h1 {
-        margin: 0 0 35px;
-        text-align: center;
-        font-size: clamp(24px, 4vw, 32px);
-        font-weight: 600;
-        color: #1c1c1c;
-      }
+            <div class="umrechner">
+                <label><b class="title">HDL-C</b></label>
 
-      .cards {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 20px;
-        align-items: stretch;
-      }
+                <div class="eingabefeld">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="7Input" />
+                </div>
 
-      .card {
-        min-width: 0;
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"><b>Faktor:</b> 0.026</span>
+                </span>
 
-        text-decoration: none;
-        color: #222;
+                <div class="eingabefeld">
+                    <label class="einheit-label">mmo/l</label>
+                    <input type="number" step="any" id="8Input" />
+                </div>
+            </div>
+            <div class="umrechner">
+                <label><b class="title">eLDL-C</b></label>
 
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="text" step="any" id="11Input" disabled />
+                </div>
 
-        transition:
-          transform 0.25s ease,
-          box-shadow 0.25s ease;
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"
+                        ><b>Formel:</b> Gesamtcholesterin - HDL-C - Triglyzeride
+                        / 5</span
+                    >
+                </span>
 
-        display: flex;
-        flex-direction: column;
-      }
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmo/l</label>
+                    <input type="text" step="any" id="12Input" disabled />
+                </div>
+            </div>
 
-      .card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
-      }
+            <div class="umrechner">
+                <label><b class="title">gLDL-C</b></label>
 
-      .card:focus-visible {
-        outline: 3px solid #555;
-        outline-offset: 4px;
-      }
+                <div class="eingabefeld">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="1Input" />
+                </div>
 
-      .logo-container {
-        height: 240px;
-        padding: 24px;
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"><b>Faktor:</b> 0.026</span>
+                </span>
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
+                <div class="eingabefeld">
+                    <label class="einheit-label">mmo/l</label>
+                    <input type="number" step="any" id="2Input" />
+                </div>
+            </div>
 
-        background: #fff;
-      }
+            <div class="umrechner">
+                <label><b class="title">non-HDL-C</b></label>
 
-      .logo {
-        display: block;
-        width: 100%;
-        height: 100%;
-        max-width: 200px;
-        max-height: 200px;
-        object-fit: contain;
-      }
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="15Input" disabled />
+                </div>
 
-      .card-content {
-        padding: 22px;
-        text-align: center;
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"
+                        ><b>Formel:</b> Gesamtcholesterin - HDL-C</span
+                    >
+                </span>
 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex-grow: 1;
-      }
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmo/l</label>
+                    <input type="number" step="any" id="16Input" disabled />
+                </div>
+            </div>
 
-      .card-title {
-        margin: 0;
-        font-size: 22px;
-        font-weight: 600;
-        overflow-wrap: anywhere;
-      }
+            <div class="umrechner">
+                <label><b class="title">Triglyzeride</b></label>
 
-      .card-button {
-        display: inline-block;
-        margin-top: 18px;
-        padding: 12px 26px;
+                <div class="eingabefeld">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="3Input" />
+                </div>
 
-        border-radius: 30px;
-        background: #111;
-        color: white;
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"><b>Faktor:</b> 0.0114</span>
+                </span>
 
-        font-size: 15px;
-        font-weight: 500;
+                <div class="eingabefeld">
+                    <label class="einheit-label">mmo/l</label>
+                    <input type="number" step="any" id="4Input" />
+                </div>
+            </div>
 
-        transition: background 0.2s ease;
-      }
+            <div class="umrechner">
+                <label><b class="title">ApoB</b></label>
 
-      .card:hover .card-button {
-        background: #333;
-      }
+                <div class="eingabefeld">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="13Input" />
+                </div>
 
-      @media (max-width: 800px) {
-        body {
-          align-items: flex-start;
-          padding: 30px 18px;
-        }
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"><b>Faktor:</b> 0.0195</span>
+                </span>
 
-        .cards {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
+                <div class="eingabefeld">
+                    <label class="einheit-label">μmol/l</label>
+                    <input type="number" step="any" id="14Input" />
+                </div>
+            </div>
 
-      @media (max-width: 1000px) {
-        .cards {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
+            <div class="umrechner">
+                <label><b class="title">Lp(a)</b></label>
 
-      @media (max-width: 520px) {
-        body {
-          padding: 24px 16px;
-        }
+                <div class="eingabefeld">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="17Input" />
+                </div>
 
-        h1 {
-          margin-bottom: 25px;
-        }
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"><b>Faktor:</b> 2.4</span>
+                </span>
 
-        .cards {
-          grid-template-columns: 1fr;
-          gap: 20px;
-        }
+                <div class="eingabefeld">
+                    <label class="einheit-label">nmol/l</label>
+                    <input type="number" step="any" id="18Input" />
+                </div>
+            </div>
 
-        .logo-container {
-          height: 200px;
-        }
+            <div class="umrechner">
+                <label><b class="title">HbA1c</b></label>
 
-        .logo {
-          max-width: 160px;
-          max-height: 160px;
-        }
+                <div class="eingabefeld">
+                    <label class="einheit-label">%</label>
+                    <input type="number" step="any" id="19Input" />
+                </div>
 
-        .card-content {
-          padding: 20px;
-        }
-      }
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"
+                        ><b>Formel:</b> (x - 2.15) * 10.929</span
+                    >
+                </span>
 
-      @media (prefers-reduced-motion: reduce) {
-        *,
-        *::before,
-        *::after {
-          transition: none !important;
-          scroll-behavior: auto !important;
-        }
-      }
-    </style>
-  </head>
+                <div class="eingabefeld">
+                    <label class="einheit-label">mmol/mol</label>
+                    <input type="number" step="any" id="20Input" />
+                </div>
+            </div>
 
-  <body>
-    <main class="page">
-      <h1>Bitte wählen Sie eine Seite</h1>
+            <div class="umrechner">
+                <label><b class="title">Kreatinin</b></label>
 
-      <section class="cards" aria-label="Verfügbare Projekte">
-        <!-- LIPID -->
-        <a class="card" href="Lipid/">
-          <div class="logo-container">
-            <img
-              class="logo"
-              src="Lipid/android-chrome-512x512.png"
-              alt="Lipid Logo"
-            />
-          </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="5Input" />
+                </div>
 
-          <div class="card-content">
-            <h2 class="card-title">Lipid</h2>
-            <span class="card-button">Öffnen</span>
-          </div>
-        </a>
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"><b>Faktor:</b> 88.4</span>
+                </span>
 
-        <!-- FASTTRACK CKD -->
-        <a class="card" href="FastTrack_CKD/">
-          <div class="logo-container">
-            <img
-              class="logo"
-              src="FastTrack_CKD/logo_small_icon_only_inverted.png"
-              alt="FastTrack CKD Logo"
-            />
-          </div>
+                <div class="eingabefeld">
+                    <label class="einheit-label">μmol/l</label>
+                    <input type="number" step="any" id="6Input" />
+                </div>
+            </div>
 
-          <div class="card-content">
-            <h2 class="card-title">FastTrack CKD</h2>
-            <span class="card-button">Öffnen</span>
-          </div>
-        </a>
+            <div class="umrechner toggle-item">
+                <label><b class="title">eRemnant-C</b></label>
 
-        <!-- DIALYSE NU -->
-        <a class="card" href="https://xjetouss.github.io/Dialyse-NU/">
-          <div class="logo-container">
-            <img class="logo" src="Dialyse-NU.png" alt="Dialyse NU Logo" />
-          </div>
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="number" step="any" id="21Input" disabled />
+                </div>
 
-          <div class="card-content">
-            <h2 class="card-title">Dialyse NU</h2>
-            <span class="card-button">Öffnen</span>
-          </div>
-        </a>
-        <a
-          class="card"
-          href="https://xjetouss.github.io/Dialyse-NU/apherese.html"
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box"
+                        ><b>Formel:</b> Triglyzeride / 5</span
+                    >
+                </span>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmol/l</label>
+                    <input type="number" step="any" id="22Input" disabled />
+                </div>
+            </div>
+            <div class="umrechner toggle-item">
+                <label
+                    ><b class="title">eLDL-C<sub>S </sub></b></label
+                >
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="text" id="23Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box">
+                        <b>Formel (Sampson):</b>
+                        TC/0.948 − HDL/0.971 − (TG/8.56 + (TG × non-HDL)/2140 −
+                        TG²/16100) − 9.44
+                    </span>
+                </span>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmol/l</label>
+                    <input type="text" id="24Input" disabled />
+                </div>
+            </div>
+            <div class="umrechner toggle-item">
+                <label
+                    ><b class="title">Lp(a)-C<sub>RM</sub></b></label
+                >
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="text" step="any" id="25Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box">
+                        <b>Formel:</b> Lp(a) [nmol/l] × 0,077
+                    </span>
+                </span>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmol/l</label>
+                    <input type="text" step="any" id="26Input" disabled />
+                </div>
+            </div>
+
+            <div class="umrechner toggle-item">
+                <label
+                    ><b class="title">CorrLDL-C<sub>RM</sub></b></label
+                >
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="text" step="any" id="27Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box">
+                        <b>Formel:</b> gLDL-C − Lp(a)-C<sub>RM</sub>
+                    </span>
+                </span>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmol/l</label>
+                    <input type="text" step="any" id="28Input" disabled />
+                </div>
+            </div>
+
+            <div class="umrechner toggle-item">
+                <label
+                    ><b class="title">Lp(a)-C<sub>AHA</sub></b></label
+                >
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="text" step="any" id="29Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box">
+                        <b>Formel:</b>
+                        Lp(a) [nmol/l]² / (ApoB [g/l]) × 48
+                    </span>
+                </span>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmol/l</label>
+                    <input type="text" step="any" id="30Input" disabled />
+                </div>
+            </div>
+
+            <div class="umrechner toggle-item">
+                <label
+                    ><b class="title">CorrLDL-C<sub>AHA</sub></b></label
+                >
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="text" step="any" id="31Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box">
+                        <b>Formel:</b> gLDL-C − Lp(a)-C<sub>AHA</sub>
+                    </span>
+                </span>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmol/l</label>
+                    <input type="text" step="any" id="32Input" disabled />
+                </div>
+            </div>
+
+            <div class="umrechner toggle-item">
+                <label><b class="title">ΔLDL-C</b></label>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mg/dl</label>
+                    <input type="text" step="any" id="33Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen">
+                    =
+                    <span class="tooltip-box">
+                        <b>Formel:</b> LDL-C - eLDL-C
+                    </span>
+                </span>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label">mmol/l</label>
+                    <input type="text" step="any" id="34Input" disabled />
+                </div>
+            </div>
+
+            <div class="umrechner toggle-item last-input-centered">
+                <label><b class="title">Non-HDL-C / ApoB</b></label>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label op">787</label>
+                    <input type="text" step="any" id="35Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen"></span>
+
+                <div></div>
+            </div>
+
+            <div class="umrechner toggle-item last-input-centered">
+                <label><b class="title">TG / ApoB</b></label>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label op">787</label>
+                    <input type="text" step="any" id="36Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen"></span>
+
+                <div></div>
+            </div>
+
+            <div class="umrechner toggle-item last-input-centered">
+                <label><b class="title">Gesamtcholesterin / ApoB</b></label>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label op">787</label>
+                    <input type="text" step="any" id="37Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen"></span>
+
+                <div></div>
+            </div>
+
+            <div class="umrechner toggle-item last-input-centered">
+                <label><b class="title">LDL-C / ApoB</b></label>
+
+                <div class="eingabefeld gray-input">
+                    <label class="einheit-label op">787</label>
+                    <input type="text" step="any" id="38Input" disabled />
+                </div>
+
+                <span class="gleichheitszeichen"></span>
+
+                <div></div>
+            </div>
+        </form>
+
+        <button
+            type="button"
+            id="Next_BTN"
+            class="BTN"
+            data-href="Risiko/Formular1.html"
+            data-guest-blocked="true"
+            title="Weiter"
         >
-          <div class="logo-container">
-            <img class="logo" src="Apherese-NU.png" alt="Apherese NU Logo" />
-          </div>
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="24px"
+                viewBox="0 -960 960 960"
+                width="24px"
+                fill="FFFFFF"
+            >
+                <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" />
+            </svg>
+        </button>
 
-          <div class="card-content">
-            <h2 class="card-title">Apherese NU</h2>
-            <span class="card-button">Öffnen</span>
-          </div>
-        </a>
-      </section>
-    </main>
-  </body>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="auth.js" defer></script>
+        <script src="script.js" defer></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", async () => {
+                await window.__backendReady;
+
+                if (!requireSession()) return;
+
+                const label = document.getElementById("usernameLabel");
+                if (label) {
+                    label.textContent = isGuest()
+                        ? "Gast"
+                        : getUsername() || "Benutzer";
+                }
+
+                document
+                    .getElementById("logoutBtn")
+                    ?.addEventListener("click", logout);
+            });
+        </script>
+    </body>
 </html>
