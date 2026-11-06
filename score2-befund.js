@@ -212,6 +212,31 @@
         reason: "SCORE2: ein Wert liegt außerhalb des Berechnungsbereichs",
       };
 
+    /* Gültigkeitsbereich der SCORE2-Charts: RR 100–200 mmHg, non-HDL 115–266 mg/dl */
+    if (sbp < 100 || sbp > 200)
+      return {
+        ok: false,
+        reason:
+          "SCORE2: nur für RR 100–200 mmHg berechenbar (aktuell " + sbp + ")",
+        befund:
+          "Eine Risikoberechnung mit SCORE2 ist nicht möglich, da der obere Blutdruckwert mit " +
+          sbp +
+          " mmHg außerhalb des Gültigkeitsbereichs von 100–200 mmHg liegt.",
+      };
+    const nonHdl = tc - hdl;
+    if (nonHdl < 115 || nonHdl > 266)
+      return {
+        ok: false,
+        reason:
+          "SCORE2: nur für non-HDL 115–266 mg/dl berechenbar (aktuell " +
+          Math.round(nonHdl) +
+          ")",
+        befund:
+          "Eine Risikoberechnung mit SCORE2 ist nicht möglich, da das non-HDL-Cholesterin mit " +
+          Math.round(nonHdl) +
+          " mg/dl außerhalb des Gültigkeitsbereichs von 115–266 mg/dl liegt.",
+      };
+
     const diabetes =
       isFinite(hba) && hba >= 6.5 ? 1 : 0; /* HbA1c ≥ 6,5 % → Diabetes */
     if (diabetes && age < 70)
@@ -239,7 +264,7 @@
 
   function scoreText() {
     const s = scoreInfo();
-    if (!s.ok) return "";
+    if (!s.ok) return s.befund || "";
     let t = "";
     if (s.assumed)
       t +=
