@@ -1,6 +1,6 @@
 /* SCORE2 / SCORE2-OP für die Lipids-Seite.
    Einbau: ganz unten in der Seite, nach dem großen Skript, ein Script-Tag mit
-   src="../score2-befund.js" einfügen (als externe Datei, nicht hineinkopieren).
+   src="../score2-befund.js" (Seite liegt in formular1/) einfügen (als externe Datei, nicht hineinkopieren).
    Erweitert buildBefund()/renderBefund() und zeigt ein farbiges Risiko-Label im Design der Seite. */
 (function () {
   "use strict";

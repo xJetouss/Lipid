@@ -44,7 +44,9 @@ const API_URL = "https://jetouss-api.onrender.com";
 
 // ================== Base Path ==================
 function getBasePath() {
-  return window.location.pathname.includes("/Risiko/") ? "../" : "";
+  return /\/(formular1|formular2|rechner)\//i.test(window.location.pathname)
+    ? "../"
+    : "";
 }
 
 // ================== Token / Session ==================
@@ -98,7 +100,7 @@ function loginAsGuest() {
   localStorage.setItem("is_guest", "true");
   localStorage.removeItem("access_token");
   localStorage.removeItem("username");
-  window.location.href = getBasePath() + "index.html";
+  window.location.href = getBasePath() + "rechner/";
 }
 
 function logout() {
@@ -145,6 +147,22 @@ async function checkSession() {
   } catch {
     return false;
   }
+}
+
+// ================== Benutzer-Badge + Logout (alle Seiten) ==================
+function initUserBadge() {
+  const label = document.getElementById("usernameLabel");
+  if (label) label.textContent = isGuest() ? "Gast" : getUsername() || "Benutzer";
+  const btn = document.getElementById("logoutBtn");
+  if (btn && !btn.dataset.bound) {
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", logout);
+  }
+}
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initUserBadge, { once: true });
+} else {
+  initUserBadge();
 }
 
 // ================== KEEP-ALIVE (Backend wach halten) ==================
