@@ -40,7 +40,8 @@ async function confirmPopup(title, text, confirmText = "Ja, löschen") {
 
 // ================== API ==================
 //const API_URL = "https://lipidapi.de.deplexo.com";
-const API_URL = "https://jetouss-api.onrender.com";
+//const API_URL = "https://jetouss-api.onrender.com";
+const API_URL = "https://lipidapi.tssnt.dev";
 
 // ================== Base Path ==================
 function getBasePath() {
@@ -152,7 +153,8 @@ async function checkSession() {
 // ================== Benutzer-Badge + Logout (alle Seiten) ==================
 function initUserBadge() {
   const label = document.getElementById("usernameLabel");
-  if (label) label.textContent = isGuest() ? "Gast" : getUsername() || "Benutzer";
+  if (label)
+    label.textContent = isGuest() ? "Gast" : getUsername() || "Benutzer";
   const btn = document.getElementById("logoutBtn");
   if (btn && !btn.dataset.bound) {
     btn.dataset.bound = "1";
