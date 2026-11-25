@@ -256,9 +256,7 @@
             document.addEventListener("DOMContentLoaded", () => {
                 // Falls schon eingeloggt → direkt weiter
                 if (isLoggedIn() || isGuest()) {
-                    window.location.href = isGuest()
-                        ? "rechner/index.html"
-                        : "formular1/index.html";
+                    window.location.href = "formular1/index.html";
                     return;
                 }
 

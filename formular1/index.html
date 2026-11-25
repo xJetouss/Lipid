@@ -1381,7 +1381,8 @@
                 // Auf Backend warten (Popup "Backend fährt hoch" falls aus)
                 await window.__backendReady;
 
-                if (!requireLogin()) return;
+                // Gäste dürfen Formular 1 vollständig nutzen
+                if (!requireSession()) return;
 
                 // BMI live
                 ["groesse", "gewicht"].forEach((id) => {
@@ -1440,7 +1441,50 @@
                 // --------------------------------------------------------
                 const saveBtn = document.getElementById("Save_BTN");
 
+                // Backend aus (Autostart abgeschaltet) → Button zeigt "Backend hochfahren"
+                function setWakeMode(on) {
+                    if (!saveBtn) return;
+                    saveBtn.classList.toggle("wake-mode", on);
+                    saveBtn.title = on ? "Backend hochfahren" : "Speichern";
+                    let lbl = saveBtn.querySelector(".wake-label");
+                    if (on && !lbl) {
+                        lbl = document.createElement("span");
+                        lbl.className = "wake-label";
+                        lbl.textContent = "Backend hochfahren";
+                        saveBtn.appendChild(lbl);
+                    } else if (!on && lbl) lbl.remove();
+                }
+                setWakeMode(!isGuest() && skipBackend());
+
                 saveBtn?.addEventListener("click", async () => {
+                    if (isGuest()) {
+                        showPopup(
+                            "Anmeldung erforderlich",
+                            "Speichern ist nur für eingeloggte Benutzer möglich.",
+                            "info",
+                        );
+                        return;
+                    }
+                    if (saveBtn.classList.contains("wake-mode")) {
+                        saveBtn.disabled = true;
+                        const ok = await wakeBackend();
+                        saveBtn.disabled = false;
+                        if (!ok) {
+                            showPopup(
+                                "Backend nicht erreichbar",
+                                "Der Server antwortet nicht. Bitte später erneut versuchen.",
+                                "error",
+                            );
+                            return;
+                        }
+                        setWakeMode(false);
+                        showPopup(
+                            "Backend läuft",
+                            "Der Server ist bereit. Jetzt kann gespeichert werden.",
+                            "success",
+                        );
+                        return;
+                    }
                     PATIENT_IDS.forEach((id) => {
                         const el = document.getElementById(id);
                         if (el) localStorage.setItem("patient_" + id, el.value);

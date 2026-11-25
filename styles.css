@@ -1100,3 +1100,52 @@ html body .BTN svg {
 #CopyBtn:hover {
   bottom: -50px;
 }
+
+/* ============================================================
+   SPEICHERN-BUTTON ALS "BACKEND HOCHFAHREN" (Autostart aus)
+   ============================================================ */
+#Save_BTN.wake-mode {
+  width: auto;
+  padding: 0 20px 0 16px;
+  gap: 8px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #005fa3;
+  white-space: nowrap;
+}
+#Save_BTN.wake-mode svg {
+  fill: #005fa3;
+}
+#Save_BTN.wake-mode:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ============================================================
+   POPUP "BACKEND FÄHRT HOCH" – X im Stil der App
+   ============================================================ */
+.swal2-close {
+  width: 40px !important;
+  height: 40px !important;
+  margin: 10px 10px 0 0 !important;
+  border-radius: 50% !important;
+  background: white !important;
+  color: #005fa3 !important;
+  font-size: 1.6em !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18) !important;
+  transition: all 0.3s ease !important;
+}
+.swal2-close:hover {
+  background: rgb(209, 207, 207) !important;
+  color: #005fa3 !important;
+  scale: 1.1;
+}
+.swal2-close:focus {
+  box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.35) !important;
+}
+.backend-skip-hint {
+  margin-top: 14px;
+  font-size: 0.85em;
+  color: #5a6572;
+}

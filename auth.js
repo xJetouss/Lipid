@@ -101,7 +101,7 @@ function loginAsGuest() {
   localStorage.setItem("is_guest", "true");
   localStorage.removeItem("access_token");
   localStorage.removeItem("username");
-  window.location.href = getBasePath() + "rechner/";
+  window.location.href = getBasePath() + "formular1/index.html";
 }
 
 function logout() {
@@ -167,8 +167,34 @@ if (document.readyState === "loading") {
   initUserBadge();
 }
 
+// ================== Backend-Autostart (abschaltbar) ==================
+// Klick auf das X im Popup "Backend fährt hoch" speichert "off".
+// Dann wird das Backend auf Formular 1 und Rechner nicht mehr automatisch
+// geweckt (kein Ping). Erst "Backend hochfahren" (Speichern) startet es.
+const BACKEND_AUTOSTART_KEY = "backend_autostart";
+let backendUp = false;
+
+function isOptionalBackendPage() {
+  return /\/(formular1|rechner)\//i.test(window.location.pathname);
+}
+
+function backendAutostartOff() {
+  try {
+    return localStorage.getItem(BACKEND_AUTOSTART_KEY) === "off";
+  } catch {
+    return false;
+  }
+}
+
+function skipBackend() {
+  return isOptionalBackendPage() && backendAutostartOff() && !backendUp;
+}
+
 // ================== KEEP-ALIVE (Backend wach halten) ==================
-(function keepAlive() {
+let keepAliveStarted = false;
+function startKeepAlive() {
+  if (keepAliveStarted) return;
+  keepAliveStarted = true;
   const PING_INTERVAL = 10 * 60 * 1000;
 
   function ping() {
@@ -179,12 +205,6 @@ if (document.readyState === "loading") {
     }).catch(() => {});
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", ping, { once: true });
-  } else {
-    ping();
-  }
-
   setInterval(() => {
     if (!document.hidden) ping();
   }, PING_INTERVAL);
@@ -192,7 +212,7 @@ if (document.readyState === "loading") {
   document.addEventListener("visibilitychange", () => {
     if (!document.hidden) ping();
   });
-})();
+}
 
 // ================== Backend-Wächter ==================
 // Blockiert Page-Logik, solange das Backend nicht antwortet.
@@ -229,21 +249,78 @@ async function pingBackendOnce(timeoutMs = BACKEND_PING_TIMEOUT) {
   }
 }
 
-function showStartupPopup() {
+// onSkip: wenn gesetzt, zeigt das Popup ein X zum Überspringen
+function showStartupPopup(onSkip) {
   if (typeof Swal === "undefined") return;
   Swal.fire({
     title: "Backend fährt hoch",
     html:
       "Der Server startet gerade.<br>" +
       "Sobald er antwortet, geht es automatisch weiter.<br><br>" +
-      "<b>Bitte warten…</b>",
+      "<b>Bitte warten…</b>" +
+      (onSkip
+        ? '<div class="backend-skip-hint">Mit ✕ ohne Backend weiterarbeiten.<br>' +
+          "Es startet dann erst beim Speichern.</div>"
+        : ""),
     icon: "info",
     allowOutsideClick: false,
     allowEscapeKey: false,
     allowEnterKey: false,
     showConfirmButton: false,
+    showCloseButton: !!onSkip,
+    closeButtonAriaLabel: "Ohne Backend weiter",
     didOpen: () => Swal.showLoading(),
+  }).then((r) => {
+    if (onSkip && r && r.dismiss === Swal.DismissReason.close) onSkip();
   });
+}
+
+// Wartet, bis das Backend antwortet. Ergebnis: "up" | "skipped" | "timeout"
+function waitForBackend(allowSkip) {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = (r) => {
+      if (done) return;
+      done = true;
+      closeBackendPopup();
+      resolve(r);
+    };
+    showStartupPopup(
+      allowSkip
+        ? () => {
+            try {
+              localStorage.setItem(BACKEND_AUTOSTART_KEY, "off");
+            } catch {}
+            finish("skipped");
+          }
+        : null,
+    );
+    (async () => {
+      const start = Date.now();
+      while (!done && Date.now() - start < BACKEND_GIVE_UP_MS) {
+        await backendSleep(BACKEND_RETRY_DELAY);
+        if (done) return;
+        if (await pingBackendOnce()) {
+          backendUp = true;
+          finish("up");
+          return;
+        }
+      }
+      finish("timeout");
+    })();
+  });
+}
+
+// Backend gezielt hochfahren (z. B. über den Speichern-Button). true = läuft.
+async function wakeBackend() {
+  if (backendUp) return true;
+  let ok = await pingBackendOnce();
+  if (!ok) ok = (await waitForBackend(false)) === "up";
+  if (ok) {
+    backendUp = true;
+    startKeepAlive();
+  }
+  return ok;
 }
 
 function closeBackendPopup() {
@@ -255,21 +332,21 @@ function closeBackendPopup() {
 // 2 Min ohne Antwort → login.html.
 window.__backendReady = (async () => {
   if (isLoginPage()) return true;
-  if (await pingBackendOnce()) return true;
+  if (skipBackend()) return true; // Autostart abgeschaltet → kein Ping
 
-  showStartupPopup();
-
-  const start = Date.now();
-  while (Date.now() - start < BACKEND_GIVE_UP_MS) {
-    await backendSleep(BACKEND_RETRY_DELAY);
-    if (await pingBackendOnce()) {
-      closeBackendPopup();
-      location.reload();
-      return new Promise(() => {});
-    }
+  startKeepAlive();
+  if (await pingBackendOnce()) {
+    backendUp = true;
+    return true;
   }
 
-  closeBackendPopup();
+  const res = await waitForBackend(isOptionalBackendPage());
+  if (res === "skipped") return true;
+  if (res === "up") {
+    location.reload();
+    return new Promise(() => {});
+  }
+
   window.location.href = getBasePath() + "login.html";
   return new Promise(() => {});
 })();
@@ -278,7 +355,7 @@ window.__backendReady = (async () => {
 // bei Ausfall Popup (Seite bleibt stehen, kein Reload).
 let hiddenAt = 0;
 document.addEventListener("visibilitychange", async () => {
-  if (isLoginPage()) return;
+  if (isLoginPage() || skipBackend()) return;
 
   if (document.hidden) {
     hiddenAt = Date.now();

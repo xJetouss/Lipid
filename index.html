@@ -11,14 +11,15 @@
             href="favicon-32x32.png"
         />
         <link rel="manifest" href="site.webmanifest" />
-        <!-- Startseite: leitet auf Formular 1 weiter (Gäste → Rechner, ohne Sitzung → Login) -->
+        <!-- Startseite: leitet auf Formular 1 weiter (ohne Sitzung → Login) -->
         <script>
             (function () {
                 var target = "formular1/";
                 try {
-                    if (localStorage.getItem("is_guest") === "true")
-                        target = "rechner/";
-                    else if (!localStorage.getItem("access_token"))
+                    if (
+                        localStorage.getItem("is_guest") !== "true" &&
+                        !localStorage.getItem("access_token")
+                    )
                         target = "login.html";
                 } catch (e) {}
                 location.replace(target);
