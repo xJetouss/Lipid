@@ -145,14 +145,15 @@
             }
 
             .btn-primary {
-                background: linear-gradient(90deg, #005fa3, #0095ff);
+                /* dunkleres Blau: weißer Text erreicht WCAG AA (≥ 4,5:1) */
+                background: linear-gradient(90deg, #005fa3, #0070c0);
                 color: white;
-                box-shadow: 0 6px 14px rgba(0, 95, 163, 0.3);
+                box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
             }
 
             .btn-primary:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 10px 20px rgba(0, 95, 163, 0.35);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22);
             }
 
             .btn-ghost {
@@ -249,7 +250,10 @@
             </button>
 
             <div id="login-msg"></div>
-            <div class="hint">Gäste haben nur Zugriff auf die Hauptseite.</div>
+            <div class="hint">
+                Gäste können Formular 1 und den Rechner nutzen, aber nicht
+                speichern.
+            </div>
         </div>
 
         <script>

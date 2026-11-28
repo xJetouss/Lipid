@@ -1,11 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap");
+
 /* ============================================================
    BASE
    ============================================================ */
+/* Formularelemente erben die Schrift der Seite */
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
 body {
   margin: 0;
   padding: 0;
   background: linear-gradient(135deg, #e3f2ff, #f8faff);
-  font-family: "Arial", "Helvetica", sans-serif;
+  font-family: "Source Sans 3", "Segoe UI", sans-serif;
   -webkit-overflow-scrolling: touch;
   opacity: 0;
   transition:

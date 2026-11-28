@@ -106,11 +106,14 @@ function updateBMI() {
   const bmiEl = get("bmi");
   if (!groesseEl || !gewichtEl || !bmiEl) return;
 
-  const groesse = parseFloat(groesseEl.value);
-  const gewicht = parseFloat(gewichtEl.value);
+  // Komma erlaubt; Größe in m (1,80) oder cm (180)
+  const zahl = (v) => parseFloat(String(v).replace(",", "."));
+  let groesse = zahl(groesseEl.value);
+  const gewicht = zahl(gewichtEl.value);
+  if (groesse > 3) groesse = groesse / 100;
 
   if (groesse > 0 && gewicht > 0) {
-    const bmi = gewicht / (groesse / 100) ** 2;
+    const bmi = gewicht / groesse ** 2;
     bmiEl.value = bmi.toFixed(1).replace(".", ",");
   } else {
     bmiEl.value = "";

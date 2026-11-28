@@ -1,0 +1,44 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "formular2/index.html"
+        ],
+        "createdAt": "2026-11-28T12:40:28.163Z",
+        "reason": "Claude: table-wrapper's th/td have 10px 14px padding; text is inset, detector misreads the scroll wrapper"
+      },
+      {
+        "rule": "nested-cards",
+        "value": "*",
+        "files": [
+          "formular1/index.html"
+        ],
+        "createdAt": "2026-11-28T12:40:28.259Z",
+        "reason": "Claude: inner boxes are form fields / table scroll area inside a section card, not stacked cards"
+      },
+      {
+        "rule": "nested-cards",
+        "value": "*",
+        "files": [
+          "formular2/index.html"
+        ],
+        "createdAt": "2026-11-28T12:40:28.360Z",
+        "reason": "Claude: inner boxes are form fields / table scroll area inside a section card, not stacked cards"
+      },
+      {
+        "rule": "nested-cards",
+        "value": "*",
+        "files": [
+          "login.html"
+        ],
+        "createdAt": "2026-11-28T12:40:28.469Z",
+        "reason": "Claude: inner boxes are form fields / table scroll area inside a section card, not stacked cards"
+      }
+    ]
+  }
+}

@@ -103,7 +103,7 @@
                 padding: 10px 20px;
                 border: none;
                 border-radius: 999px;
-                background: linear-gradient(135deg, #0077cc, #00a2ff);
+                background: linear-gradient(135deg, #005fa3, #0070c0);
                 color: #fff;
                 font-size: 1rem;
                 cursor: pointer;
@@ -651,7 +651,7 @@
                         id="groesse"
                         inputmode="decimal"
                         autocomplete="off"
-                        placeholder="z. B. 1.8 oder 1,8"
+                        placeholder="z. B. 1,80 oder 180"
                     />
                 </div>
 
@@ -898,7 +898,7 @@
                     key: "1Input",
                     name: "gLDL-C",
                     test: (l) =>
-                        /^ldl/.test(l) &&
+                        /^g?ldl/.test(l) &&
                         !/apherese|\bnach\b|\bn\.|berechn|calc|quotient|\//.test(
                             l,
                         ),
@@ -967,7 +967,59 @@
                 return m ? parseFloat(m[0]) : NaN;
             }
 
+            // Tabelle zeilenweise lesen (Zellen per Tab getrennt):
+            // Name (ggf. mit ", Einheit") | Normbereich | Wert(e)
+            // Normbereich-Zellen ("<200", ">45.0") werden übersprungen,
+            // genommen wird der erste echte Messwert der Zeile.
+            function labParseRows(txt) {
+                const out = {};
+                const rows = String(txt)
+                    .split(/\r?\n/)
+                    .map((l) => l.split("\t").map((c) => c.trim()));
+                const isVal = (x) => /^-?\d/.test(x || "");
+
+                LAB_FIELDS.forEach((f) => {
+                    let best = null;
+                    rows.forEach((r) => {
+                        const li = r.findIndex((c) => /[a-zäöü]/i.test(c));
+                        if (li < 0) return;
+                        // "Cholesterin (gesamt), mg/dl" → Name + Einheit
+                        const m = r[li].match(/^(.*?),\s*([^,]{1,12})$/);
+                        const name = (m ? m[1] : r[li]).toLowerCase();
+                        if (!f.test(name)) return;
+
+                        const ci = r.findIndex((c, j) => j > li && isVal(c));
+                        if (ci < 0) return;
+                        const v = labNumber(r[ci]);
+                        if (isNaN(v)) return;
+
+                        let unit = r[ci]
+                            .replace(/^-?[\d.,]+/, "")
+                            .replace(/[+*!↑↓]/g, "")
+                            .trim();
+                        if (!unit && m) unit = m[2];
+                        if (!unit) {
+                            const nx = r[ci + 1] || "";
+                            if (nx.length <= 14 && !isVal(nx)) unit = nx;
+                        }
+                        unit = unit.toLowerCase().replace(/[µμ]/g, "u");
+
+                        const val = f.conv(v, unit);
+                        if (!isFinite(val)) return;
+                        // Bei mehreren Zeilen (z. B. Lp(a) nmol/l + mg/dl, HbA1c % + mmol/mol)
+                        // die Zeile in mg/dl bzw. % bevorzugen
+                        const pref = unit.includes("mg/dl") || unit === "%";
+                        if (!best || (pref && !best.pref))
+                            best = { key: f.key, val: String(val), pref };
+                    });
+                    if (best) out[f.id] = { key: best.key, val: best.val };
+                });
+                return out;
+            }
+
             function labParse(txt) {
+                // Tabellen (mit Tabs) zeilenweise, sonst Fließtext wie bisher
+                if (/\t/.test(txt)) return labParseRows(txt);
                 const T = txt
                     .split(/[\t\n\r]+/)
                     .map((x) => x.trim())
@@ -1273,9 +1325,11 @@
                 return `${d}.${m}.${y}`;
             }
 
+            // Größe in Metern; Eingabe in cm (z. B. 180) wird umgerechnet
             function parseGroesse(v) {
-                const n = parseDeNum(v);
+                let n = parseDeNum(v);
                 if (n <= 0) return 0;
+                if (n > 3) n = n / 100;
                 return +n.toFixed(2);
             }
 
@@ -1302,7 +1356,7 @@
                 const bmiEl = document.getElementById("bmi");
                 if (!groesseEl || !gewichtEl || !bmiEl) return;
 
-                const groesse = parseDeNum(groesseEl.value);
+                const groesse = parseGroesse(groesseEl.value);
                 const gewicht = parseDeNum(gewichtEl.value);
 
                 if (groesse > 0 && gewicht > 0) {
